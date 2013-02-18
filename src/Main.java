@@ -402,6 +402,36 @@ class ItemParser {
 
 class SoldItem extends ItemParser {
 
+    private int index;
+    private String model;
+    private int soldAmount;
+    private float minePrice;
+    private float soldPrice;
+    private boolean soldout;
+
+    public SoldItem(String line) {
+        StringTokenizer scanner = new StringTokenizer(line, "|");
+
+        this.index = nextInt(scanner);
+        this.model = nextString(scanner);
+        this.soldAmount = nextInt(scanner);
+        this.minePrice = nextFloat(scanner);
+        this.soldPrice = nextFloat(scanner);
+        this.soldout = nextBoolean(scanner);
+    }
+
+    public String toString() {
+        String fmt = "| %-20s | %4s | %7s | %7s | %c |";
+        String value = String.format(fmt, 
+                this.model, 
+                this.soldAmount < 0 ? "-" : this.soldAmount,
+                this.minePrice < 0 ? "-" : this.minePrice,
+                this.soldPrice < 0 ? "-" : this.soldPrice,
+                this.soldout ? 'X' : ' ');
+
+        return value;
+    }
+
 };
 
 class StockItem extends ItemParser {
@@ -410,10 +440,8 @@ class StockItem extends ItemParser {
     private String model;
     private String title;
     private int haveAmount;
-    private int soldAmount;
-    private float originalPrice;
+    private float marketPrice;
     private float minePrice;
-    private float soldPrice;
     private boolean selling;
     private String tags;
     private String note;
@@ -425,25 +453,21 @@ class StockItem extends ItemParser {
         this.model = nextString(scanner);
         this.title = nextString(scanner);
         this.haveAmount = nextInt(scanner);
-        this.soldAmount = nextInt(scanner);
-        this.originalPrice = nextFloat(scanner);
+        this.marketPrice = nextFloat(scanner);
         this.minePrice = nextFloat(scanner);
-        this.soldPrice = nextFloat(scanner);
         this.selling = nextBoolean(scanner);
         this.tags = nextString(scanner);
         this.note = nextString(scanner);
     }
 
     public String toString() {
-        String fmt = "| %-20s | %-30s | %4s | %4s | %7s | %7s | %7s | %c | %-30s | %-30s |";
+        String fmt = "| %-20s | %-30s | %4s | %7s | %7s | %c | %-30s | %-30s |";
         String value = String.format(fmt, 
                 this.model, 
                 this.title,
                 this.haveAmount, 
-                this.soldAmount < 0 ? "-" : this.soldAmount,
-                this.originalPrice < 0 ? "-" : this.originalPrice, 
+                this.marketPrice < 0 ? "-" : this.marketPrice, 
                 this.minePrice < 0 ? "-" : this.minePrice,
-                this.soldPrice < 0 ? "-" : this.soldPrice,
                 this.selling ? 'X' : ' ',
                 this.tags, 
                 this.note);
@@ -455,10 +479,10 @@ class StockItem extends ItemParser {
 
 class ItemsReader {
 
-    private ArrayList<Item> data;
+    private ArrayList<StockItem> data;
     
     public ItemsReader() {
-        data = new ArrayList<Item>();
+        data = new ArrayList<StockItem>();
     }
 
     public void read(String filename) throws IOException {
@@ -476,7 +500,7 @@ class ItemsReader {
         return data.size();
     }
 
-    public Item getItem(int index) {
+    public StockItem getItem(int index) {
         return data.get(index);
     }
 

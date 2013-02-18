@@ -1,23 +1,23 @@
-1	| M305			| | 3	| | 66		| 40		| |y| Used,Wireless		|
-2	| M215			| | 6	| | 47		| 35		| |y| Used,Wireless		|
-3	| MediaPlay Cordless	| | 1	| | 110		| 70		| |y| Used,Wireless		|
-4	| VX Revolution		| | 2	| | 250		| 80		| |y| Used,Wireless		| Set: Mouse,Charger,Holder,Bag
-5	| MX Revolution		| | 2	| | 340		| 100		| |y| Used,Wireless		| Set: Mouse,Bag
-6	| V450			| | 5	| | 100		| 55		| |y| Used,Wireless		|
-7	| M505			| | 4	| | 120		| 55		| |y| Used,Wireless		|
-8	| Click! Optical Mouse	| | 1	| | 25		| 10		| |y| Boxed,Unused,Wireless	|
-9	| Cordless Mouse	| | 1	| |		| 15		| |y| Boxed,Unused,Wireless	|
-10	| MX518			| | 1	| | 130		| 60		| |y| Used,Wired		|
-11	| G5			| | 1	| | 165		| 85		| |y| Used,Wired		| Set: Mouse,Weights
-12	| M100			| | 1	| | 30		| 15		| |y| Used,Wired		|
-13	| M500			| | 1	| | 85		| 40		| |y| Used,Wired		|
-14	| Miksti deklai		| | 6	| |		| 5		| |y|				|
-15	| MX Revolution		| | 1	| | 340		| 100		| |n| Used,Non-full		|
-16	| M195			| | 1	| | 48		| 35		| |n| Used,Broken		|
-17	| M185			| | 4	| | 40		| 30		| |y| Used			|
-18	| M185			| | 1	| | 40		| 30		| |n| Used,Broken		|
-19	| M235			| | 1	| | 79		| 40		| |y| Used			|
-20	| M705			| | 1	|1| 109		| 60		|50|y| Used			|
-21	| M525			| | 3	|1| 90		| 45		|50|y| Used			|
-22	| M505			| | 1	| | 120		| 55		| |y| Used,Broken		|
-23	| V550 Nano		| | 1	| | 120		| 60		| |y| Used			|
+1	| M305			| | 3	| 66		| 40		|y| Used,Wireless		|
+2	| M215			| | 6	| 47		| 35		|y| Used,Wireless		|
+3	| MediaPlay Cordless	| | 1	| 110		| 70		|y| Used,Wireless		|
+4	| VX Revolution		| | 2	| 250		| 80		|y| Used,Wireless		| Set: Mouse,Charger,Holder,Bag
+5	| MX Revolution		| | 2	| 340		| 100		|y| Used,Wireless		| Set: Mouse,Bag
+6	| V450			| | 5	| 100		| 55		|y| Used,Wireless		|
+7	| M505			| | 4	| 120		| 55		|y| Used,Wireless		|
+8	| Click! Optical Mouse	| | 1	| 25		| 10		|y| Boxed,Unused,Wireless	|
+9	| Cordless Mouse	| | 1	|		| 15		|y| Boxed,Unused,Wireless	|
+10	| MX518			| | 1	| 130		| 60		|y| Used,Wired			|
+11	| G5			| | 1	| 165		| 85		|y| Used,Wired			| Set: Mouse,Weights
+12	| M100			| | 1	| 30		| 15		|y| Used,Wired			|
+13	| M500			| | 1	| 85		| 40		|y| Used,Wired			|
+14	| Miksti deklai		| | 6	|		| 5		|y|				|
+15	| MX Revolution		| | 1	| 340		| 100		|n| Used,Non-full		|
+16	| M195			| | 1	| 48		| 35		|n| Used,Broken			|
+17	| M185			| | 4	| 40		| 30		|y| Used			|
+18	| M185			| | 1	| 40		| 30		|n| Used,Broken			|
+19	| M235			| | 1	| 79		| 40		|y| Used			|
+20	| M705			| | 1	| 109		| 60		|y| Used			|
+21	| M525			| | 3	| 90		| 45		|y| Used			|
+22	| M505			| | 1	| 120		| 55		|y| Used,Broken			|
+23	| V550 Nano		| | 1	| 120		| 60		|y| Used			|
