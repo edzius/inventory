@@ -1,18 +1,15 @@
 
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
-import org.apache.commons.cli.ParseException;
+
+import inv.storage.StockReader;
 
 /*
 import java.awt.BorderLayout;
@@ -281,16 +278,14 @@ public class Main {
 
     private CommandLine params;
     private boolean verbose = false;
-    private ItemsReader items;
+    private StockReader items;
 
-    public Main(CommandLine params) throws IOException {
-        items = new ItemsReader();
+    public Main(CommandLine params) {
+        items = new StockReader();
 
         this.params = params;
         if (params.hasOption('v'))
             verbose = true;
-
-        readItemsFile(this.params.getOptionValue('f'));
     }
 
     public void readItemsFile(String filename) throws IOException {
@@ -316,21 +311,18 @@ public class Main {
 
 	public static void main(String[] args) {
 
-        Main main = null;
-        Options options = new Options();
-
 		Option verbose = OptionBuilder.withLongOpt("verbose")
                                       .withDescription("Set verbose output")
                                       .create('v');
 		Option datafile = OptionBuilder.withLongOpt("datafile")
                                       .withDescription("Set data file to read data from")
                                       .hasArg()
-                                      .isRequired()
                                       .create('f');
 		Option list = OptionBuilder.withLongOpt("list")
                                    .withDescription("List exisiting items")
                                    .create('l');
 
+        Options options = new Options();
         options.addOption(verbose);
         options.addOption(datafile);
         options.addOption(list);
@@ -343,9 +335,14 @@ public class Main {
             die("Parsing failed. Reason: " + exp.getMessage());
         }
 
-        Main ctrl = null;
+        Main ctrl = new Main(params);
+
+        String sourceFile = "stock.db";
+        if (params.hasOption('f'))
+            sourceFile = params.getOptionValue('f');
+
         try {
-            ctrl = new Main(params);
+            ctrl.readItemsFile(sourceFile);
         } catch (IOException e) {
             die(e.getMessage());
         }
@@ -354,154 +351,6 @@ public class Main {
             ctrl.listItems();
             System.exit(0);
         }
-            
 	}
 };
 
-class ItemParser {
-
-    private static final float DEFAULT_FLOAT = -1.0f;
-    private static final int DEFAULT_INT = -1;
-    private static final String DEFAULT_STRING= "";
-
-    protected int nextInt(StringTokenizer scanner) {
-        String value = nextString(scanner);
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
-
-    protected float nextFloat(StringTokenizer scanner) {
-        String value = nextString(scanner);
-        try {
-            return Float.parseFloat(value);
-        } catch (NumberFormatException e) {
-            return -1.0f;
-        }
-    }
-
-    protected boolean nextBoolean(StringTokenizer scanner) {
-        String value = nextString(scanner);
-        if (value.equals("y"))
-            return true;
-        return false;
-    }
-
-
-    protected String nextString(StringTokenizer scanner) {
-        if (!scanner.hasMoreTokens())
-            return DEFAULT_STRING;
-
-        String value = scanner.nextToken().trim();
-        return value;
-    }   
-
-};
-
-class SoldItem extends ItemParser {
-
-    private int index;
-    private String model;
-    private int soldAmount;
-    private float minePrice;
-    private float soldPrice;
-    private boolean soldout;
-
-    public SoldItem(String line) {
-        StringTokenizer scanner = new StringTokenizer(line, "|");
-
-        this.index = nextInt(scanner);
-        this.model = nextString(scanner);
-        this.soldAmount = nextInt(scanner);
-        this.minePrice = nextFloat(scanner);
-        this.soldPrice = nextFloat(scanner);
-        this.soldout = nextBoolean(scanner);
-    }
-
-    public String toString() {
-        String fmt = "| %-20s | %4s | %7s | %7s | %c |";
-        String value = String.format(fmt, 
-                this.model, 
-                this.soldAmount < 0 ? "-" : this.soldAmount,
-                this.minePrice < 0 ? "-" : this.minePrice,
-                this.soldPrice < 0 ? "-" : this.soldPrice,
-                this.soldout ? 'X' : ' ');
-
-        return value;
-    }
-
-};
-
-class StockItem extends ItemParser {
-
-    private int index;
-    private String model;
-    private String title;
-    private int haveAmount;
-    private float marketPrice;
-    private float minePrice;
-    private boolean selling;
-    private String tags;
-    private String note;
-
-    public StockItem(String line) {
-        StringTokenizer scanner = new StringTokenizer(line, "|");
-
-        this.index = nextInt(scanner);
-        this.model = nextString(scanner);
-        this.title = nextString(scanner);
-        this.haveAmount = nextInt(scanner);
-        this.marketPrice = nextFloat(scanner);
-        this.minePrice = nextFloat(scanner);
-        this.selling = nextBoolean(scanner);
-        this.tags = nextString(scanner);
-        this.note = nextString(scanner);
-    }
-
-    public String toString() {
-        String fmt = "| %-20s | %-30s | %4s | %7s | %7s | %c | %-30s | %-30s |";
-        String value = String.format(fmt, 
-                this.model, 
-                this.title,
-                this.haveAmount, 
-                this.marketPrice < 0 ? "-" : this.marketPrice, 
-                this.minePrice < 0 ? "-" : this.minePrice,
-                this.selling ? 'X' : ' ',
-                this.tags, 
-                this.note);
-
-        return value;
-    }
-
-}
-
-class ItemsReader {
-
-    private ArrayList<StockItem> data;
-    
-    public ItemsReader() {
-        data = new ArrayList<StockItem>();
-    }
-
-    public void read(String filename) throws IOException {
-        String line;
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-
-        while ((line = br.readLine()) != null) {
-            data.add(new StockItem(line));
-        }
-
-        br.close();
-    }
-
-    public int getCount() {
-        return data.size();
-    }
-
-    public StockItem getItem(int index) {
-        return data.get(index);
-    }
-
-}
