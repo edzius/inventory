@@ -3,6 +3,8 @@ package inv.storage;
 public class StockItem extends ItemParser {
 
     private int index;
+    private String type;
+    private String manufacturer;
     private String model;
     private String title;
     private int haveAmount;
@@ -16,6 +18,8 @@ public class StockItem extends ItemParser {
         super(line);
 
         this.index = nextInt();
+        this.type = nextString();
+        this.manufacturer = nextString();
         this.model = nextString();
         this.title = nextString();
         this.haveAmount = nextInt();
@@ -27,8 +31,10 @@ public class StockItem extends ItemParser {
     }
 
     public String toString() {
-        String fmt = "| %-20s | %-30s | %4s | %7s | %7s | %c | %-30s | %-30s |";
+        String fmt = "| %-15s | %-15s | %-20s | %-30s | %4s | %7s | %7s | %c | %-30s | %-30s |";
         String value = String.format(fmt, 
+                this.type, 
+                this.manufacturer, 
                 this.model, 
                 this.title,
                 this.haveAmount, 

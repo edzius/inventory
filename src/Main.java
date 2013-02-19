@@ -296,7 +296,7 @@ public class Main {
         ;
     }
 
-    public void listItems() {
+    public void listStockItems() {
         int i;
         int count = items.getCount();
 
@@ -304,9 +304,26 @@ public class Main {
             System.out.println(items.getItem(i));
     }
 
+    public void addStockItem(String type, String model) {
+
+    }
+
+    public void addStockItem(String type, String model, String manufacturer) {
+
+    }
+
+    public void addStockItem(String type, String model, String manufacturer, String title) {
+
+    }
+
     public static void die(String message) {
         System.err.println(message);
         System.exit(1);
+    }
+
+    public static void ok(String message) {
+        System.err.println(message);
+        System.exit(0);
     }
 
 	public static void main(String[] args) {
@@ -315,17 +332,21 @@ public class Main {
                                       .withDescription("Set verbose output")
                                       .create('v');
 		Option datafile = OptionBuilder.withLongOpt("datafile")
-                                      .withDescription("Set data file to read data from")
-                                      .hasArg()
-                                      .create('f');
-		Option list = OptionBuilder.withLongOpt("list")
-                                   .withDescription("List exisiting items")
-                                   .create('l');
+                                       .withDescription("Set data file to read data from")
+                                       .hasArg()
+                                       .create('f');
+		Option stockList = OptionBuilder.withLongOpt("list")
+                                        .withDescription("List exisiting stock items")
+                                        .create('l');
+		Option stockAdd = OptionBuilder.withLongOpt("add")
+                                       .withDescription("Add new item to stock")
+                                       .create('a');
 
         Options options = new Options();
         options.addOption(verbose);
         options.addOption(datafile);
-        options.addOption(list);
+        options.addOption(stockList);
+        options.addOption(stockAdd);
 
         CommandLine params = null;
         CommandLineParser parser = new GnuParser();
@@ -348,8 +369,13 @@ public class Main {
         }
 
         if (params.hasOption('l')) {
-            ctrl.listItems();
-            System.exit(0);
+            ctrl.listStockItems();
+            ok("Stock items listed succesfully");
+        }
+
+        if (params.hasOption('a')) {
+            ctrl.addStockItem("aaa", "bbbb");
+            ok("Stock item added succesfully");
         }
 	}
 };
