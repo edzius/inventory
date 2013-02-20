@@ -30,6 +30,24 @@ public class StockItem extends ItemParser {
         this.note = nextString();
     }
 
+    public StockItem(int index, String type, String manufacturer, String model, String title) {
+        super("");
+
+        this.index = index;
+        this.type = type;
+        this.manufacturer = manufacturer;
+        this.model = model;
+        this.title = title;
+        this.haveAmount = -1;
+        this.marketPrice = -1;
+        this.minePrice = -1;
+        this.selling = false;
+    }
+
+    public int getIndex() {
+        return this.index;
+    }
+
     public String toString() {
         String fmt = "| %-15s | %-15s | %-20s | %-30s | %4s | %7s | %7s | %c | %-30s | %-30s |";
         String value = String.format(fmt, 
@@ -37,12 +55,12 @@ public class StockItem extends ItemParser {
                 this.manufacturer, 
                 this.model, 
                 this.title,
-                this.haveAmount, 
+                this.haveAmount < 0 ? "-" : this.haveAmount, 
                 this.marketPrice < 0 ? "-" : this.marketPrice, 
                 this.minePrice < 0 ? "-" : this.minePrice,
                 this.selling ? 'X' : ' ',
-                this.tags, 
-                this.note);
+                this.tags == null ? "" : this.tags, 
+                this.note == null ? "" : this.note);
 
         return value;
     }

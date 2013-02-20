@@ -12,7 +12,7 @@ import com.obixlabs.commons.io.FreeTextConsoleInputHandler;
 
 import java.io.IOException;
 
-import inv.storage.StockReader;
+import inv.storage.StockList;
 
 /*
 import java.awt.BorderLayout;
@@ -281,10 +281,10 @@ public class Main {
 
     private CommandLine params;
     private boolean verbose = false;
-    private StockReader items;
+    private StockList items;
 
     public Main(CommandLine params) {
-        items = new StockReader();
+        items = new StockList();
 
         this.params = params;
         if (params.hasOption('v'))
@@ -308,7 +308,7 @@ public class Main {
     }
 
     public void addStockItem(String type, String model, String manufacturer, String title) {
-
+        items.addItem(type, manufacturer, model, title);
     }
 
     public static void die(String message) {
