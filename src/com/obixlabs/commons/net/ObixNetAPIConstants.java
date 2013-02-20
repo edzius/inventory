@@ -31,9 +31,6 @@
 
 package com.obixlabs.commons.net;
 
-import javax.mail.BodyPart;
-import javax.mail.internet.MimeBodyPart;
-
 /**
  * <p>
  * Definitions of constants which are 

@@ -45,9 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
 import com.obixlabs.commons.ObixException;
 import com.obixlabs.commons.ObixRuntimeException;
 import com.obixlabs.commons.io.IOResourceCloser;
@@ -294,3 +291,17 @@ public final class NetworkUtils
 				.length() > 0);
 	}
 }
+
+// XXX: stub for javax.* imports
+class InternetAddress {
+
+    public InternetAddress(String email) throws AddressException {}
+
+}
+
+class AddressException extends Exception {
+
+    public AddressException() {}
+
+}
+
