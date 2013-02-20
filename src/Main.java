@@ -7,6 +7,9 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 
+import com.obixlabs.commons.io.InteractiveCommandLineReader;
+import com.obixlabs.commons.io.FreeTextConsoleInputHandler;
+
 import java.io.IOException;
 
 import inv.storage.StockReader;
@@ -304,14 +307,6 @@ public class Main {
             System.out.println(items.getItem(i));
     }
 
-    public void addStockItem(String type, String model) {
-
-    }
-
-    public void addStockItem(String type, String model, String manufacturer) {
-
-    }
-
     public void addStockItem(String type, String model, String manufacturer, String title) {
 
     }
@@ -324,6 +319,16 @@ public class Main {
     public static void ok(String message) {
         System.err.println(message);
         System.exit(0);
+    }
+
+    public static String readCLI(String caption) {
+        FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", true);
+        try {
+            InteractiveCommandLineReader.prompt(hndl);
+        } catch (IOException e) {
+            return null;
+        }
+        return hndl.getInputValue();
     }
 
 	public static void main(String[] args) {
@@ -374,7 +379,11 @@ public class Main {
         }
 
         if (params.hasOption('a')) {
-            ctrl.addStockItem("aaa", "bbbb");
+            String type = readCLI("product type");
+            String model = readCLI("product model");
+            String manufacturer = readCLI("product manufacturer");
+            String title = readCLI("product title");
+            ctrl.addStockItem(type, model, manufacturer, title);
             ok("Stock item added succesfully");
         }
 	}
