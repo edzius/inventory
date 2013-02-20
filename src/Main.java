@@ -19,6 +19,7 @@ public class Main {
     private CommandLine params;
     private boolean verbose = false;
     private StockList items;
+    private String sourceFile;
 
     public Main(CommandLine params) {
         items = new StockList();
@@ -29,11 +30,16 @@ public class Main {
     }
 
     public void readItemsFile(String filename) throws IOException {
+        this.sourceFile = filename;
         items.read(filename);
     }
 
-    public void writeItemsFile(String filename) {
-        ;
+    public void writeItemsFile(String filename) throws IOException {
+        items.write(filename);
+    }
+
+    public void saveItemsFile() throws IOException {
+        writeItemsFile(this.sourceFile);
     }
 
     public void listStockItems() {
@@ -66,6 +72,23 @@ public class Main {
             return null;
         }
         return hndl.getInputValue();
+    }
+
+    public static void process(Main ctrl, CommandLine params) throws IOException {
+        if (params.hasOption('l')) {
+            ctrl.listStockItems();
+            ok("Stock items listed succesfully");
+        }
+
+        if (params.hasOption('a')) {
+            String type = readCLI("product type");
+            String model = readCLI("product model");
+            String manufacturer = readCLI("product manufacturer");
+            String title = readCLI("product title");
+            ctrl.addStockItem(type, model, manufacturer, title);
+            ctrl.saveItemsFile();
+            ok("Stock item added succesfully");
+        }
     }
 
 	public static void main(String[] args) {
@@ -110,18 +133,16 @@ public class Main {
             die(e.getMessage());
         }
 
-        if (params.hasOption('l')) {
-            ctrl.listStockItems();
-            ok("Stock items listed succesfully");
-        }
-
-        if (params.hasOption('a')) {
-            String type = readCLI("product type");
-            String model = readCLI("product model");
-            String manufacturer = readCLI("product manufacturer");
-            String title = readCLI("product title");
-            ctrl.addStockItem(type, model, manufacturer, title);
-            ok("Stock item added succesfully");
+        try {
+            process(ctrl, params);
+        } catch (Exception e) {
+            die(e.getMessage());
+        } finally {
+            try {
+                ctrl.saveItemsFile();
+            } catch (IOException ex) {
+                die(ex.getMessage());
+            }
         }
 	}
 };
