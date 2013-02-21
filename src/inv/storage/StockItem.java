@@ -44,6 +44,26 @@ public class StockItem extends ItemParser {
         this.selling = false;
     }
 
+    public void setNote(String text) {
+        this.note = text;
+    }
+
+    public void setMinePrice(float value) {
+        this.minePrice = value;
+    }
+
+    public void setMarketPrice(float value) {
+        this.marketPrice = value;
+    }
+
+    public void setAmount(int value) {
+        this.haveAmount = value;
+    }
+
+    public void toggleSelling() {
+        this.selling = !this.selling;
+    }
+
     public int getIndex() {
         return this.index;
     }

@@ -15,6 +15,15 @@ import java.io.IOException;
 import inv.storage.StockList;
 import inv.storage.StockItem;
 
+/*
+ * TODO:
+ * * Add item type classificator. Make it selectable via CLI and possibility to add new if required.
+ * * Add item manufactorer classificator. Make it selectable via CLI and possibility to add new if required.
+ * * Add tags appending and removing
+ * * Add option to move item to sold list
+ * * Separate StockItems and SellingItems lists
+ */
+
 public class Main {
 
     private CommandLine params;
@@ -117,7 +126,43 @@ public class Main {
             if (params.hasOption('d')) {
                 ctrl.deleteStockItem(index);
                 perror(String.format("Deleted item %s", item.summary()));
+                return;
             }
+
+            if (params.hasOption("noteRemove")) {
+                item.setNote("");
+                perror(String.format("Removed item note"));
+            }
+
+            if (params.hasOption("noteSet")) {
+                item.setNote(params.getOptionValue("noteSet"));
+                perror(String.format("Updated item note"));
+            }
+
+            if (params.hasOption("selling")) {
+                item.toggleSelling();
+                perror(String.format("Updated item selling state"));
+            }
+
+            if (params.hasOption("priceMarket")) {
+                float value = Float.parseFloat(params.getOptionValue("priceMarket"));
+                item.setMarketPrice(value);
+                perror(String.format("Updated item market price"));
+            }
+
+            if (params.hasOption("priceMine")) {
+                float value = Float.parseFloat(params.getOptionValue("priceMine"));
+                item.setMinePrice(value);
+                perror(String.format("Updated item selling price"));
+            }
+
+            if (params.hasOption("amountSet")) {
+                int value = Integer.parseInt(params.getOptionValue("amountSet"));
+                item.setAmount(value);
+                perror(String.format("Updated item stock amount"));
+            }
+
+            System.out.println(item.toString());
         }
     }
 
@@ -143,6 +188,28 @@ public class Main {
 		Option stockRemove = OptionBuilder.withLongOpt("delete")
                                        .withDescription("Delete an item from stock")
                                        .create('d');
+		Option itemNoteSet = OptionBuilder.withLongOpt("note-set")
+                                       .withDescription("Update stock item note")
+                                       .hasArg()
+                                       .create("noteSet");
+		Option itemNoteRemove = OptionBuilder.withLongOpt("note-remove")
+                                       .withDescription("Remove stock item note")
+                                       .create("noteRemove");
+		Option itemSelling = OptionBuilder.withLongOpt("selling")
+                                       .withDescription("Toggle item selling or not")
+                                       .create("selling");
+		Option itemPriceMine = OptionBuilder.withLongOpt("price-mine")
+                                       .withDescription("Update item market price")
+                                       .hasArg()
+                                       .create("priceMine");
+		Option itemPriceMarket = OptionBuilder.withLongOpt("price-market")
+                                       .withDescription("Update item selling price")
+                                       .hasArg()
+                                       .create("priceMarket");
+		Option itemAmountSet = OptionBuilder.withLongOpt("amount-set")
+                                       .withDescription("Update item stock amount")
+                                       .hasArg()
+                                       .create("amountSet");
 
         Options options = new Options();
         options.addOption(verbose);
@@ -151,6 +218,12 @@ public class Main {
         options.addOption(stockAdd);
         options.addOption(stockSelect);
         options.addOption(stockRemove);
+        options.addOption(itemNoteSet);
+        options.addOption(itemNoteRemove);
+        options.addOption(itemSelling);
+        options.addOption(itemPriceMine);
+        options.addOption(itemPriceMarket);
+        options.addOption(itemAmountSet);
 
         CommandLine params = null;
         CommandLineParser parser = new GnuParser();

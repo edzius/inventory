@@ -33,7 +33,7 @@ public abstract class ItemParser {
 
     protected boolean nextBoolean() {
         String value = nextString();
-        if (value.equals("y"))
+        if (value.equals("y") || value.equals("X"))
             return true;
         return false;
     }
