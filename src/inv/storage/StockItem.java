@@ -68,7 +68,7 @@ public class StockItem extends ItemParser {
         return this.index;
     }
 
-    public String summary() {
+    public String summaryString() {
         String fmt = "%s: %s %s";
         String value = String.format(fmt, 
                 this.type, 
@@ -78,9 +78,28 @@ public class StockItem extends ItemParser {
         return value;
     }
 
-    public String toString() {
-        String fmt = "| %-15s | %-15s | %-20s | %-30s | %4s | %7s | %7s | %c | %-30s | %-30s |";
+    public String fileString() {
+        String fmt = "%4s | %-15s | %-15s | %-20s | %-30s | %4s | %7s | %7s | %c | %-30s | %-30s";
         String value = String.format(fmt, 
+                this.index, 
+                this.type, 
+                this.manufacturer, 
+                this.model, 
+                this.title,
+                this.haveAmount < 0 ? "" : this.haveAmount, 
+                this.marketPrice < 0 ? "" : this.marketPrice, 
+                this.minePrice < 0 ? "" : this.minePrice,
+                this.selling ? 'y' : 'n',
+                this.tags == null ? "" : this.tags, 
+                this.note == null ? "" : this.note);
+
+        return value;
+    }
+
+    public String toString() {
+        String fmt = "| %4s | %-15s | %-15s | %-20s | %-30s | %4s | %7s | %7s | %c | %-30s | %-30s |";
+        String value = String.format(fmt, 
+                this.index, 
                 this.type, 
                 this.manufacturer, 
                 this.model, 

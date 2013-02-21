@@ -28,16 +28,14 @@ public class StockList {
 
     public void write(String filename) throws IOException {
         int i;
-        String line, index;
+        String line;
         StockItem item;
         BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
 
         for (i = 0; i < getCount(); i++) {
             item = getElement(i);
-            line = item.toString();
+            line = item.fileString();
 
-            index = String.format("%-10s ", item.getIndex());
-            bw.write(index, 0, index.length());
             bw.write(line, 0, line.length());
             bw.newLine();
         }

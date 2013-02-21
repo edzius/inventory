@@ -125,7 +125,7 @@ public class Main {
             item = ctrl.getStockItem(index);
             if (params.hasOption('d')) {
                 ctrl.deleteStockItem(index);
-                perror(String.format("Deleted item %s", item.summary()));
+                perror(String.format("Deleted item %s", item.summaryString()));
                 return;
             }
 
