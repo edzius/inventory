@@ -33,7 +33,7 @@ public class StockList {
         BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
 
         for (i = 0; i < getCount(); i++) {
-            item = getItem(i);
+            item = getElement(i);
             line = item.toString();
 
             index = String.format("%-10s ", item.getIndex());
@@ -49,8 +49,17 @@ public class StockList {
         return data.size();
     }
 
-    public StockItem getItem(int index) {
+    public StockItem getElement(int index) {
         return data.get(index);
+    }
+
+    public boolean hasItem(int index) {
+        int i;
+        for (i = 0; i < getCount(); i++)
+            if (getElement(i).getIndex() == index)
+                return true;
+
+        return false;
     }
 
     public void addItem(String type, String manufacturer, String model, String title) {
@@ -65,7 +74,7 @@ public class StockList {
         StockItem item;
 
         for (i = 0; i < getCount(); i++) {
-            item = getItem(i);
+            item = getElement(i);
             if (item.getIndex() > max)
                 max = item.getIndex();
         }

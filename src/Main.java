@@ -47,11 +47,15 @@ public class Main {
         int count = items.getCount();
 
         for (i = 0; i < count; i++)
-            System.out.println(items.getItem(i));
+            System.out.println(items.getElement(i));
     }
 
     public void addStockItem(String type, String model, String manufacturer, String title) {
         items.addItem(type, manufacturer, model, title);
+    }
+
+    public boolean hasStockItem(int index) {
+        return items.hasItem(index);
     }
 
     public static void die(String message) {
@@ -89,6 +93,13 @@ public class Main {
             ctrl.saveItemsFile();
             ok("Stock item added succesfully");
         }
+
+        if (params.hasOption('s')) {
+            int index = Integer.parseInt(params.getOptionValue('s'));
+            if (!ctrl.hasStockItem(index))
+                die(String.format("Stock item %d not found", index));
+            ok(String.format("Selected %d", index));
+        }
     }
 
 	public static void main(String[] args) {
@@ -106,12 +117,17 @@ public class Main {
 		Option stockAdd = OptionBuilder.withLongOpt("add")
                                        .withDescription("Add new item to stock")
                                        .create('a');
+		Option stockSelect = OptionBuilder.withLongOpt("select")
+                                       .withDescription("Select an item from stock")
+                                       .hasArg()
+                                       .create('s');
 
         Options options = new Options();
         options.addOption(verbose);
         options.addOption(datafile);
         options.addOption(stockList);
         options.addOption(stockAdd);
+        options.addOption(stockSelect);
 
         CommandLine params = null;
         CommandLineParser parser = new GnuParser();
