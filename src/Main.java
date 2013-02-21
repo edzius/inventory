@@ -13,6 +13,7 @@ import com.obixlabs.commons.io.FreeTextConsoleInputHandler;
 import java.io.IOException;
 
 import inv.storage.StockList;
+import inv.storage.StockItem;
 
 public class Main {
 
@@ -50,8 +51,16 @@ public class Main {
             System.out.println(items.getElement(i));
     }
 
+    public StockItem getStockItem(int index) {
+        return items.getItem(index);
+    }
+
     public void addStockItem(String type, String model, String manufacturer, String title) {
         items.addItem(type, manufacturer, model, title);
+    }
+
+    public void deleteStockItem(int index) {
+        items.deleteItem(index);
     }
 
     public boolean hasStockItem(int index) {
@@ -68,6 +77,10 @@ public class Main {
         System.exit(0);
     }
 
+    public static void perror(String message) {
+        System.err.println(message);
+    }
+
     public static String readCLI(String caption) {
         FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", true);
         try {
@@ -81,7 +94,7 @@ public class Main {
     public static void process(Main ctrl, CommandLine params) throws IOException {
         if (params.hasOption('l')) {
             ctrl.listStockItems();
-            ok("Stock items listed succesfully");
+            perror("Stock items listed succesfully");
         }
 
         if (params.hasOption('a')) {
@@ -90,15 +103,21 @@ public class Main {
             String manufacturer = readCLI("product manufacturer");
             String title = readCLI("product title");
             ctrl.addStockItem(type, model, manufacturer, title);
-            ctrl.saveItemsFile();
-            ok("Stock item added succesfully");
+            perror("Stock item added succesfully");
         }
 
         if (params.hasOption('s')) {
             int index = Integer.parseInt(params.getOptionValue('s'));
+            StockItem item;
+
             if (!ctrl.hasStockItem(index))
                 die(String.format("Stock item %d not found", index));
-            ok(String.format("Selected %d", index));
+
+            item = ctrl.getStockItem(index);
+            if (params.hasOption('d')) {
+                ctrl.deleteStockItem(index);
+                perror(String.format("Deleted item %s", item.summary()));
+            }
         }
     }
 
@@ -121,6 +140,9 @@ public class Main {
                                        .withDescription("Select an item from stock")
                                        .hasArg()
                                        .create('s');
+		Option stockRemove = OptionBuilder.withLongOpt("delete")
+                                       .withDescription("Delete an item from stock")
+                                       .create('d');
 
         Options options = new Options();
         options.addOption(verbose);
@@ -128,6 +150,7 @@ public class Main {
         options.addOption(stockList);
         options.addOption(stockAdd);
         options.addOption(stockSelect);
+        options.addOption(stockRemove);
 
         CommandLine params = null;
         CommandLineParser parser = new GnuParser();

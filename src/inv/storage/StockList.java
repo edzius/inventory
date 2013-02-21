@@ -53,13 +53,23 @@ public class StockList {
         return data.get(index);
     }
 
-    public boolean hasItem(int index) {
+    private int getPosition(int index) {
         int i;
         for (i = 0; i < getCount(); i++)
             if (getElement(i).getIndex() == index)
-                return true;
+                return i;
 
-        return false;
+        return -1;
+    }
+
+
+    public boolean hasItem(int index) {
+        return getPosition(index) != -1;
+    }
+    
+    public StockItem getItem(int index) {
+        int position = getPosition(index);
+        return getElement(position);
     }
 
     public void addItem(String type, String manufacturer, String model, String title) {
@@ -67,6 +77,12 @@ public class StockList {
         StockItem item = new StockItem(index, type, manufacturer, model, title);
         data.add(item);
     }
+
+    public void deleteItem(int index) {
+        int position = getPosition(index);
+        System.out.println(index);
+        data.remove(position);
+    }   
 
     private int getFreeIndex() {
         int i;

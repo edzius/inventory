@@ -48,6 +48,16 @@ public class StockItem extends ItemParser {
         return this.index;
     }
 
+    public String summary() {
+        String fmt = "%s: %s %s";
+        String value = String.format(fmt, 
+                this.type, 
+                this.manufacturer, 
+                this.model);
+
+        return value;
+    }
+
     public String toString() {
         String fmt = "| %-15s | %-15s | %-20s | %-30s | %4s | %7s | %7s | %c | %-30s | %-30s |";
         String value = String.format(fmt, 
