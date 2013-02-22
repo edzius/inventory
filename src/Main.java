@@ -129,12 +129,12 @@ public class Main {
                 return;
             }
 
-            if (params.hasOption("noteRemove")) {
+            if (params.hasOption("removeNote")) {
                 item.setNote("");
                 perror(String.format("Removed item note"));
             }
 
-            if (params.hasOption("noteSet")) {
+            if (params.hasOption("setNote")) {
                 item.setNote(params.getOptionValue("noteSet"));
                 perror(String.format("Updated item note"));
             }
@@ -144,19 +144,19 @@ public class Main {
                 perror(String.format("Updated item selling state"));
             }
 
-            if (params.hasOption("priceMarket")) {
+            if (params.hasOption("setMarket")) {
                 float value = Float.parseFloat(params.getOptionValue("priceMarket"));
                 item.setMarketPrice(value);
                 perror(String.format("Updated item market price"));
             }
 
-            if (params.hasOption("priceMine")) {
+            if (params.hasOption("setPrice")) {
                 float value = Float.parseFloat(params.getOptionValue("priceMine"));
                 item.setMinePrice(value);
                 perror(String.format("Updated item selling price"));
             }
 
-            if (params.hasOption("amountSet")) {
+            if (params.hasOption("setAmount")) {
                 int value = Integer.parseInt(params.getOptionValue("amountSet"));
                 item.setAmount(value);
                 perror(String.format("Updated item stock amount"));
@@ -188,28 +188,36 @@ public class Main {
 		Option stockRemove = OptionBuilder.withLongOpt("delete")
                                        .withDescription("Delete an item from stock")
                                        .create('d');
-		Option itemNoteSet = OptionBuilder.withLongOpt("note-set")
+		Option itemNoteSet = OptionBuilder.withLongOpt("set-note")
                                        .withDescription("Update stock item note")
                                        .hasArg()
-                                       .create("noteSet");
-		Option itemNoteRemove = OptionBuilder.withLongOpt("note-remove")
+                                       .create("setNote");
+		Option itemNoteRemove = OptionBuilder.withLongOpt("remove-note")
                                        .withDescription("Remove stock item note")
-                                       .create("noteRemove");
+                                       .create("removeNote");
 		Option itemSelling = OptionBuilder.withLongOpt("selling")
                                        .withDescription("Toggle item selling or not")
                                        .create("selling");
-		Option itemPriceMine = OptionBuilder.withLongOpt("price-mine")
+		Option itemPriceMine = OptionBuilder.withLongOpt("set-price")
                                        .withDescription("Update item market price")
                                        .hasArg()
-                                       .create("priceMine");
-		Option itemPriceMarket = OptionBuilder.withLongOpt("price-market")
+                                       .create("setPrice");
+		Option itemPriceMarket = OptionBuilder.withLongOpt("set-market")
                                        .withDescription("Update item selling price")
                                        .hasArg()
-                                       .create("priceMarket");
-		Option itemAmountSet = OptionBuilder.withLongOpt("amount-set")
+                                       .create("setMarket");
+		Option itemAmountSet = OptionBuilder.withLongOpt("set-amount")
                                        .withDescription("Update item stock amount")
                                        .hasArg()
-                                       .create("amountSet");
+                                       .create("setAmount");
+        Option itemTagAdd = OptionBuilder.withLongOpt("add-tag")
+                                       .withDescription("Add new tag for item")
+                                       .hasArg()
+                                       .create("addTag");
+        Option itemTagRemove = OptionBuilder.withLongOpt("remove-tag")
+                                       .withDescription("Remove item tag")
+                                       .hasArg()
+                                       .create("removeTag");
 
         Options options = new Options();
         options.addOption(verbose);
@@ -224,6 +232,8 @@ public class Main {
         options.addOption(itemPriceMine);
         options.addOption(itemPriceMarket);
         options.addOption(itemAmountSet);
+        options.addOption(itemTagAdd);
+        options.addOption(itemTagRemove);
 
         CommandLine params = null;
         CommandLineParser parser = new GnuParser();
