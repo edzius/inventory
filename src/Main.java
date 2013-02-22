@@ -179,6 +179,13 @@ public class Main {
                 perror(String.format("Cleared all item tags"));
             }
 
+            if (params.hasOption("setTitle")) {
+                String value = params.getOptionValue("setTitle");
+                item.setTitle(value);
+                perror(String.format("New title for item set"));
+            }
+
+
             System.out.println(item.toString());
         }
     }
@@ -238,6 +245,10 @@ public class Main {
         Option itemTagsClear = OptionBuilder.withLongOpt("clear-tags")
                                        .withDescription("Remove all item tags")
                                        .create("clearTags");
+        Option itemTitleSet = OptionBuilder.withLongOpt("set-title")
+                                       .withDescription("Update item title")
+                                       .hasArg()
+                                       .create("setTitle");
 
         Options options = new Options();
         options.addOption(verbose);
@@ -255,6 +266,7 @@ public class Main {
         options.addOption(itemTagAdd);
         options.addOption(itemTagRemove);
         options.addOption(itemTagsClear);
+        options.addOption(itemTitleSet);
 
         CommandLine params = null;
         CommandLineParser parser = new GnuParser();

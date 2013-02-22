@@ -58,6 +58,10 @@ public class StockItem extends ItemParser {
         tags.clear();
     }
 
+    public void setTitle(String text) {
+        this.title = text;
+    }
+
     public void setNote(String text) {
         this.note = text;
     }
