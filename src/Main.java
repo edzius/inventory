@@ -135,7 +135,7 @@ public class Main {
             }
 
             if (params.hasOption("setNote")) {
-                item.setNote(params.getOptionValue("noteSet"));
+                item.setNote(params.getOptionValue("setNote"));
                 perror(String.format("Updated item note"));
             }
 
@@ -145,21 +145,38 @@ public class Main {
             }
 
             if (params.hasOption("setMarket")) {
-                float value = Float.parseFloat(params.getOptionValue("priceMarket"));
+                float value = Float.parseFloat(params.getOptionValue("setMarket"));
                 item.setMarketPrice(value);
                 perror(String.format("Updated item market price"));
             }
 
             if (params.hasOption("setPrice")) {
-                float value = Float.parseFloat(params.getOptionValue("priceMine"));
+                float value = Float.parseFloat(params.getOptionValue("setPrice"));
                 item.setMinePrice(value);
                 perror(String.format("Updated item selling price"));
             }
 
             if (params.hasOption("setAmount")) {
-                int value = Integer.parseInt(params.getOptionValue("amountSet"));
+                int value = Integer.parseInt(params.getOptionValue("setAmount"));
                 item.setAmount(value);
                 perror(String.format("Updated item stock amount"));
+            }
+
+            if (params.hasOption("addTag")) {
+                String value = params.getOptionValue("addTag");
+                item.addTag(value);
+                perror(String.format("Added tag for item"));
+            }
+
+            if (params.hasOption("removeTag")) {
+                String value = params.getOptionValue("removeTag");
+                item.removeTag(value);
+                perror(String.format("Removed tag from item"));
+            }
+
+            if (params.hasOption("clearTags")) {
+                item.clearTags();
+                perror(String.format("Cleared all item tags"));
             }
 
             System.out.println(item.toString());
@@ -218,6 +235,9 @@ public class Main {
                                        .withDescription("Remove item tag")
                                        .hasArg()
                                        .create("removeTag");
+        Option itemTagsClear = OptionBuilder.withLongOpt("clear-tags")
+                                       .withDescription("Remove all item tags")
+                                       .create("clearTags");
 
         Options options = new Options();
         options.addOption(verbose);
@@ -234,6 +254,7 @@ public class Main {
         options.addOption(itemAmountSet);
         options.addOption(itemTagAdd);
         options.addOption(itemTagRemove);
+        options.addOption(itemTagsClear);
 
         CommandLine params = null;
         CommandLineParser parser = new GnuParser();

@@ -11,7 +11,7 @@ public class StockItem extends ItemParser {
     private float marketPrice;
     private float minePrice;
     private boolean selling;
-    private String tags;
+    private ItemTags tags;
     private String note;
 
     public StockItem(String line) {
@@ -26,7 +26,7 @@ public class StockItem extends ItemParser {
         this.marketPrice = nextFloat();
         this.minePrice = nextFloat();
         this.selling = nextBoolean();
-        this.tags = nextString();
+        this.tags = new ItemTags(nextString());
         this.note = nextString();
     }
 
@@ -42,6 +42,20 @@ public class StockItem extends ItemParser {
         this.marketPrice = -1;
         this.minePrice = -1;
         this.selling = false;
+        this.tags = new ItemTags();
+        this.note = "";
+    }
+
+    public void addTag(String tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(String tag) {
+        tags.remove(tag);
+    }
+
+    public void clearTags() {
+        tags.clear();
     }
 
     public void setNote(String text) {
@@ -90,8 +104,8 @@ public class StockItem extends ItemParser {
                 this.marketPrice < 0 ? "" : this.marketPrice, 
                 this.minePrice < 0 ? "" : this.minePrice,
                 this.selling ? 'y' : 'n',
-                this.tags == null ? "" : this.tags, 
-                this.note == null ? "" : this.note);
+                this.tags.toString(),
+                this.note);
 
         return value;
     }
