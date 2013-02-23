@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import inv.storage.StockList;
 import inv.storage.StockItem;
+import inv.storage.Selector;
 
 /*
  * TODO:
@@ -98,6 +99,39 @@ public class Main {
             return null;
         }
         return hndl.getInputValue();
+    }
+
+    public static String listCLI(String caption, Selector selector) {
+        int i;
+        String text;
+        FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", true);
+
+        while (true) {
+
+            for (i = 0; i < selector.size(); i++) {
+                System.out.println(String.format("%d: %s", i+1, selector.get(i)));
+            }
+            System.out.println(String.format("*: Custom entry"));
+
+            try {
+                InteractiveCommandLineReader.prompt(hndl);
+            } catch (IOException e) {
+                return null;
+            }
+            text = hndl.getInputValue();
+
+            try {
+                int value = Integer.parseInt(text);
+                if (selector.size() >= value) {
+                    perror(String.format("Invalid index selected %d", value));
+                    continue;
+                }
+                return selector.get(value);
+            } catch (Exception e) {}
+
+            selector.add(text);
+            return text;
+        }
     }
 
     public static void process(Main ctrl, CommandLine params) throws IOException {
@@ -281,6 +315,16 @@ public class Main {
         String sourceFile = "stock.db";
         if (params.hasOption('f'))
             sourceFile = params.getOptionValue('f');
+
+        String modelsFile = "src/models.db";
+
+        // TODO: it must be in ctrl not in main(). Hint: add configuration file
+        // and configurable path to these files
+        try {
+            Selector models = new Selector(modelsFile);
+        } catch (IOException e) {
+            die(e.getMessage());
+        }
 
         try {
             ctrl.readItemsFile(sourceFile);

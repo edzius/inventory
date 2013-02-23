@@ -1,0 +1,67 @@
+package inv.storage;
+
+import java.util.ArrayList;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
+public class Selector {
+
+    private ArrayList<String> data;   
+    private String fileName;
+
+    public Selector(String fileName) throws IOException {
+        this.fileName = fileName;
+        data = new ArrayList<String>();
+        read(fileName);
+    }
+
+    private void read(String filename) throws IOException {
+        String line;
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+
+        while ((line = br.readLine()) != null) {
+            data.add(line);
+        }
+
+        br.close();
+    }
+
+    private void write(String filename) throws IOException {
+        int i;
+        String line;
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+
+        for (i = 0; i < data.size(); i++) {
+            line = data.get(i);
+            bw.write(line, 0, line.length());
+            bw.newLine();
+        }
+        bw.flush();
+        bw.close();
+    }
+
+    public void add(String value) {
+        if (data.indexOf(value) != -1)
+            return;
+
+        data.add(value);
+
+        try {
+            write(this.fileName);
+        } catch (IOException e) {
+            // XXX: log sometring.. Need to find out something about logging
+        }
+    }
+
+    public int size() {
+        return data.size();
+    }
+
+    public String get(int index) {
+        return data.get(index);
+    }
+
+}
