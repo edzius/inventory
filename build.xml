@@ -8,6 +8,7 @@
 
 	<path id="project.classpath">
 		<pathelement location="${BUILD_DIR}"/>
+		<fileset dir="${LIB_DIR}" includes="*.jar"/>
 	</path>
 
 	<condition property="do.obfuscate">
