@@ -10,14 +10,15 @@ import java.io.IOException;
 public class StockList {
 
     private ArrayList<StockItem> data;
-    
-    public StockList() {
+
+    public StockList(String fileName) throws IOException {
         data = new ArrayList<StockItem>();
+        read(fileName);
     }
 
-    public void read(String filename) throws IOException {
+    public void read(String fileName) throws IOException {
         String line;
-        BufferedReader br = new BufferedReader(new FileReader(filename));
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
 
         while ((line = br.readLine()) != null) {
             data.add(new StockItem(line));
@@ -26,11 +27,11 @@ public class StockList {
         br.close();
     }
 
-    public void write(String filename) throws IOException {
+    public void write(String fileName) throws IOException {
         int i;
         String line;
         StockItem item;
-        BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
 
         for (i = 0; i < getCount(); i++) {
             item = getElement(i);

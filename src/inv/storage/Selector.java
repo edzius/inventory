@@ -18,9 +18,9 @@ public class Selector {
         read(fileName);
     }
 
-    private void read(String filename) throws IOException {
+    private void read(String fileName) throws IOException {
         String line;
-        BufferedReader br = new BufferedReader(new FileReader(filename));
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
 
         while ((line = br.readLine()) != null) {
             data.add(line);
@@ -29,10 +29,10 @@ public class Selector {
         br.close();
     }
 
-    private void write(String filename) throws IOException {
+    private void write(String fileName) throws IOException {
         int i;
         String line;
-        BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
 
         for (i = 0; i < data.size(); i++) {
             line = data.get(i);

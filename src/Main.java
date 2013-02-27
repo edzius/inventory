@@ -7,9 +7,12 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 
+import org.ini4j.Ini;
+
 import com.obixlabs.commons.io.InteractiveCommandLineReader;
 import com.obixlabs.commons.io.FreeTextConsoleInputHandler;
-
+ 
+import java.io.File;
 import java.io.IOException;
 
 import inv.storage.StockList;
@@ -25,32 +28,65 @@ import inv.storage.Selector;
  * * Separate StockItems and SellingItems lists
  */
 
+class AttributeException extends Exception {
+
+    public AttributeException() {
+        super();
+    }
+
+    public AttributeException(String message) {
+        super(message);
+    }
+
+}
+
 public class Main {
 
-    private CommandLine params;
     private boolean verbose = false;
+
+    private CommandLine params;
+    private Ini config;
+
     private StockList items;
-    private String sourceFile;
+    private Selector types;
+    private Selector brands;
+    private Selector tags;
 
-    public Main(CommandLine params) {
-        items = new StockList();
-
+    public Main(CommandLine params, Ini config) throws IOException, AttributeException {
+        this.config = config;
         this.params = params;
         if (params.hasOption('v'))
             verbose = true;
+
+        readStorages();
     }
 
-    public void readItemsFile(String filename) throws IOException {
-        this.sourceFile = filename;
-        items.read(filename);
+    public void readStorages() throws IOException, AttributeException {
+        Ini.Section storage = this.config.get("storages");
+        String itemsFile = storage.get("items-file");
+        if (itemsFile == null)
+            throw new AttributeException("Items file path not defined");
+        String typesDb = storage.get("types-db");
+        if (typesDb == null)
+            throw new AttributeException("Types DB file path not defined");
+        String brandsDb = storage.get("brands-db");
+        if (brandsDb == null)
+            throw new AttributeException("Brands DB file path not defined");
+        String tagsDb = storage.get("tags-db");
+        if (tagsDb == null)
+            throw new AttributeException("Tags DB file path not defined");
+
+        this.items = new StockList(itemsFile);
+        this.types = new Selector(typesDb);
+        this.brands = new Selector(brandsDb);
+        this.tags = new Selector(tagsDb);
     }
 
-    public void writeItemsFile(String filename) throws IOException {
-        items.write(filename);
-    }
+    public void writeStorages() throws IOException {
+        Ini.Section storage = this.config.get("storages");
+        String itemsFile = storage.get("items-file");
 
-    public void saveItemsFile() throws IOException {
-        writeItemsFile(this.sourceFile);
+        this.items.write(itemsFile);
     }
 
     public void listStockItems() {
@@ -89,6 +125,20 @@ public class Main {
 
     public static void perror(String message) {
         System.err.println(message);
+    }
+
+    public static Ini initConfig(String fileName) {
+        File configFile = new File(fileName);
+
+        if (!configFile.exists() || !configFile.isFile())
+            die(String.format("Config file '%s' does not exist", fileName));
+
+        try {
+            return new Ini(configFile);
+        } catch (IOException e) {
+            die(String.format("Failed to read config file '%s'", fileName));
+        }
+        return null;
     }
 
     public static String readCLI(String caption) {
@@ -229,10 +279,10 @@ public class Main {
 		Option verbose = OptionBuilder.withLongOpt("verbose")
                                       .withDescription("Set verbose output")
                                       .create('v');
-		Option datafile = OptionBuilder.withLongOpt("datafile")
-                                       .withDescription("Set data file to read data from")
+		Option datafile = OptionBuilder.withLongOpt("config")
+                                       .withDescription("Set application configuration file")
                                        .hasArg()
-                                       .create('f');
+                                       .create('c');
 		Option stockList = OptionBuilder.withLongOpt("list")
                                         .withDescription("List exisiting stock items")
                                         .create('l');
@@ -310,25 +360,16 @@ public class Main {
             die("Parsing failed. Reason: " + exp.getMessage());
         }
 
-        Main ctrl = new Main(params);
+        String configFile = "default.cfg";
+        if (params.hasOption('c'))
+            configFile = params.getOptionValue('c');
 
-        String sourceFile = "stock.db";
-        if (params.hasOption('f'))
-            sourceFile = params.getOptionValue('f');
-
-        String modelsFile = "src/models.db";
-
-        // TODO: it must be in ctrl not in main(). Hint: add configuration file
-        // and configurable path to these files
-        try {
-            Selector models = new Selector(modelsFile);
-        } catch (IOException e) {
-            die(e.getMessage());
-        }
+        Ini config = initConfig(configFile);
+        Main ctrl = null;
 
         try {
-            ctrl.readItemsFile(sourceFile);
-        } catch (IOException e) {
+            ctrl = new Main(params, config);
+        } catch (Exception e) {                 // IOException, AttributeException
             die(e.getMessage());
         }
 
@@ -338,7 +379,7 @@ public class Main {
             die(e.getMessage());
         } finally {
             try {
-                ctrl.saveItemsFile();
+                ctrl.writeStorages();
             } catch (IOException ex) {
                 die(ex.getMessage());
             }
