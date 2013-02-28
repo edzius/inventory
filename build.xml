@@ -98,6 +98,13 @@
           target: dist
          ================================= -->
 	<target name="dist" depends="build.jar, obfuscate" description="makes and obfuscates JAR">
+		<!-- copy JAR libs -->
+		<copy todir="${DIST_DIR}">
+			<fileset dir=".">
+				<include name="lib/*.jar" />
+			</fileset>
+		</copy>
+
 		<symlink resource="${image_name}" link="${DIST_DIR}/inventory.jar" overwrite="yes"/>
 	</target>
 
