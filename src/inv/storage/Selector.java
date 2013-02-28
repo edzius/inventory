@@ -11,10 +11,20 @@ public class Selector {
 
     private ArrayList<String> data;   
     private String fileName;
+    private boolean readOnly;
+
+    public Selector(String[] values) {
+        this.readOnly = true;
+        this.data = new ArrayList<String>();
+
+        for (int i = 0; i < values.length; i++)
+            data.add(values[i]);
+    }
 
     public Selector(String fileName) throws IOException {
+        this.readOnly = false;
         this.fileName = fileName;
-        data = new ArrayList<String>();
+        this.data = new ArrayList<String>();
         read(fileName);
     }
 
@@ -48,6 +58,9 @@ public class Selector {
             return;
 
         data.add(value);
+
+        if (readOnly)
+            return;
 
         try {
             write(this.fileName);

@@ -50,4 +50,8 @@ class ItemTags {
 
         return line;
     }
+
+    public String[] toArray() {
+        return (String[]) tags.toArray();
+    }
 }

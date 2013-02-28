@@ -21,9 +21,6 @@ import inv.storage.Selector;
 
 /*
  * TODO:
- * * Add item type classificator. Make it selectable via CLI and possibility to add new if required.
- * * Add item manufactorer classificator. Make it selectable via CLI and possibility to add new if required.
- * * Add tags appending and removing
  * * Add option to move item to sold list
  * * Separate StockItems and SellingItems lists
  */
@@ -89,6 +86,18 @@ public class Main {
         this.items.write(itemsFile);
     }
 
+    public Selector getTypeSelector() {
+        return this.types;
+    }
+
+    public Selector getBrandSelector() {
+        return this.brands;
+    }
+
+    public Selector getTagSelector() {
+        return this.tags;
+    }
+
     public void listStockItems() {
         int i;
         int count = items.getCount();
@@ -141,8 +150,8 @@ public class Main {
         return null;
     }
 
-    public static String readCLI(String caption) {
-        FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", true);
+    public static String readCLI(String caption, boolean required) {
+        FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", !required);
         try {
             InteractiveCommandLineReader.prompt(hndl);
         } catch (IOException e) {
@@ -151,10 +160,10 @@ public class Main {
         return hndl.getInputValue();
     }
 
-    public static String listCLI(String caption, Selector selector) {
+    public static String listCLI(String caption, Selector selector, boolean allowCustom) {
         int i;
         String text;
-        FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", true);
+        FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", false);
 
         while (true) {
 
@@ -172,12 +181,15 @@ public class Main {
 
             try {
                 int value = Integer.parseInt(text);
-                if (selector.size() >= value) {
+                if (selector.size() <= value) {
                     perror(String.format("Invalid index selected %d", value));
                     continue;
                 }
-                return selector.get(value);
+                return selector.get(value-1);
             } catch (Exception e) {}
+
+            if (!allowCustom)
+                continue;
 
             selector.add(text);
             return text;
@@ -191,11 +203,11 @@ public class Main {
         }
 
         if (params.hasOption('a')) {
-            String type = readCLI("product type");
-            String model = readCLI("product model");
-            String manufacturer = readCLI("product manufacturer");
-            String title = readCLI("product title");
-            ctrl.addStockItem(type, model, manufacturer, title);
+            String type = listCLI("Product type", ctrl.getTypeSelector(), true);
+            String brand = listCLI("Product brand", ctrl.getBrandSelector(), true);
+            String model = readCLI("Product model", true);
+            String title = readCLI("Product title", false);
+            ctrl.addStockItem(type, model, brand, title);
             perror("Stock item added succesfully");
         }
 
@@ -248,12 +260,16 @@ public class Main {
 
             if (params.hasOption("addTag")) {
                 String value = params.getOptionValue("addTag");
+                if (value == null)
+                    value = listCLI("Add item tag", ctrl.getTagSelector(), true);
                 item.addTag(value);
                 perror(String.format("Added tag for item"));
             }
 
             if (params.hasOption("removeTag")) {
                 String value = params.getOptionValue("removeTag");
+                if (value == null)
+                    value = listCLI("Remove item tag", new Selector(item.getTags()), false);
                 item.removeTag(value);
                 perror(String.format("Removed tag from item"));
             }
@@ -320,11 +336,11 @@ public class Main {
                                        .create("setAmount");
         Option itemTagAdd = OptionBuilder.withLongOpt("add-tag")
                                        .withDescription("Add new tag for item")
-                                       .hasArg()
+                                       .hasOptionalArg()
                                        .create("addTag");
         Option itemTagRemove = OptionBuilder.withLongOpt("remove-tag")
                                        .withDescription("Remove item tag")
-                                       .hasArg()
+                                       .hasOptionalArg()
                                        .create("removeTag");
         Option itemTagsClear = OptionBuilder.withLongOpt("clear-tags")
                                        .withDescription("Remove all item tags")
