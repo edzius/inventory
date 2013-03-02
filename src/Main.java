@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import storage.StockList;
 import storage.StockItem;
+import storage.SellingList;
+import storage.SellingItem;
 import cli.Selector;
 import cli.CliTools;
 
@@ -37,6 +39,7 @@ public class Main {
     private Ini config;
 
     private StockList items;
+    private SellingList sales;
 
     private Selector types;
     private Selector brands;
@@ -56,6 +59,10 @@ public class Main {
         if (itemsFile == null)
             throw new AttributeException("Items file path not defined");
 
+        String salesFile = storage.get("sales-file");
+        if (salesFile == null)
+            throw new AttributeException("Sales file path not defined");
+
         String typesDb = storage.get("types-db");
         if (typesDb == null)
             throw new AttributeException("Types DB file path not defined");
@@ -67,6 +74,8 @@ public class Main {
             throw new AttributeException("Tags DB file path not defined");
 
         this.items = new StockList(itemsFile);
+        this.sales = new SellingList(salesFile);
+
         this.types = new Selector(typesDb);
         this.brands = new Selector(brandsDb);
         this.tags = new Selector(tagsDb);
@@ -75,8 +84,10 @@ public class Main {
     public void writeStorages() throws IOException {
         Ini.Section storage = this.config.get("storages");
         String itemsFile = storage.get("items-file");
+        String salesFile = storage.get("sales-file");
 
         this.items.write(itemsFile);
+        this.sales.write(salesFile);
     }
 
     public Selector getTypeSelector() {
@@ -125,7 +136,10 @@ public class Main {
         return filtered;
     }
 
-    public StockItem getStockItem(int index) {
+    public StockItem getStockItem(int index) throws AttributeException {
+        if (!hasStockItem(index))
+            throw new AttributeException(String.format("Stock item %d not found", index));
+
         return items.getItem(index);
     }
 
@@ -136,9 +150,6 @@ public class Main {
     }
 
     public StockItem deleteStockItem(int index) throws AttributeException {
-        if (!hasStockItem(index))
-            throw new AttributeException(String.format("Stock item %d not found", index));
-
         StockItem item = getStockItem(index);
         items.deleteItem(index);
         return item;
@@ -146,6 +157,33 @@ public class Main {
 
     public boolean hasStockItem(int index) {
         return items.hasItem(index);
+    }
+
+    public void startSellingItem(int index, float value) throws AttributeException {
+        if (isSellingItem(index))
+            throw new AttributeException(String.format("Item %d is already selling", index));
+        
+        StockItem item = getStockItem(index);
+        SellingItem sale = new SellingItem(item, value);
+        sales.addItem(sale);
+    }
+
+    public void stopSellingItem(int index) throws AttributeException {
+        if (!isSellingItem(index))
+            throw new AttributeException(String.format("Item %d is not selling", index));
+
+        sales.deleteItem(index);
+    }
+
+    public boolean isSellingItem(int index) {
+        return sales.hasItem(index);
+    }
+
+    public SellingItem getSellingItem(int index) throws AttributeException {
+        if (!isSellingItem(index))
+            throw new AttributeException(String.format("Item %d is not selling", index));
+
+        return sales.getItem(index);
     }
 
     public static void perror(String message) {
@@ -220,12 +258,13 @@ public class Main {
 
         if (params.hasOption('s')) {                    // Select item
             int index = Integer.parseInt(params.getOptionValue('s'));
-            StockItem item;
 
-            if (!ctrl.hasStockItem(index))
-                Utils.die(String.format("Stock item %d not found", index));
-
-            item = ctrl.getStockItem(index);
+            StockItem item = null;
+            try {
+                item = ctrl.getStockItem(index);
+            } catch (AttributeException e) {
+                Utils.die(e.getMessage());
+            }
 
             if (params.hasOption("removeNote")) {
                 item.setNote("");
@@ -242,23 +281,6 @@ public class Main {
                 item.setBuyPrice(value);
                 perror(String.format("Updated item cost"));
             }
-
-//            if (params.hasOption("selling")) {
-//                item.toggleSelling();
-//                perror(String.format("Updated item selling state"));
-//            }
-//
-//            if (params.hasOption("setMarket")) {
-//                float value = Float.parseFloat(params.getOptionValue("setMarket"));
-//                item.setMarketPrice(value);
-//                perror(String.format("Updated item market price"));
-//            }
-//
-//            if (params.hasOption("setPrice")) {
-//                float value = Float.parseFloat(params.getOptionValue("setPrice"));
-//                item.setMinePrice(value);
-//                perror(String.format("Updated item selling price"));
-//            }
 
             if (params.hasOption("setAmount")) {
                 int value = Integer.parseInt(params.getOptionValue("setAmount"));
@@ -293,6 +315,46 @@ public class Main {
                 perror("New title for item set");
             }
 
+            if (params.hasOption("startSelling")) {
+                float value = Float.parseFloat(params.getOptionValue("startSelling"));
+                try {
+                    ctrl.startSellingItem(index, value);
+                } catch (AttributeException e) {
+                    Utils.die(String.format(e.getMessage()));
+                }
+                perror(String.format("Started selling item"));
+            }
+
+            if (params.hasOption("stopSelling")) {
+                try {
+                    ctrl.stopSellingItem(index);
+                } catch (AttributeException e) {
+                    Utils.die(String.format(e.getMessage()));
+                }
+                perror(String.format("Stopped selling item"));
+            }
+
+            if (params.hasOption("setMarket")) {
+                float value = Float.parseFloat(params.getOptionValue("setMarket"));
+                try {
+                    SellingItem sale = ctrl.getSellingItem(index);
+                    sale.setMarketPrice(value);
+                } catch (AttributeException e) {
+                    Utils.die(String.format(e.getMessage()));
+                }
+                perror("Updated selling item market price");
+            }
+
+            if (params.hasOption("setPrice")) {
+                float value = Float.parseFloat(params.getOptionValue("setPrice"));
+                try {
+                    SellingItem sale = ctrl.getSellingItem(index);
+                    sale.setMinePrice(value);
+                } catch (AttributeException e) {
+                    Utils.die(String.format(e.getMessage()));
+                }
+                perror("Updated selling item price");
+            }
 
             System.out.println(item.toString());
         }

@@ -96,6 +96,18 @@ public class StockItem extends ItemParser {
         return this.index;
     }
 
+    public String getType() {
+        return this.type;
+    }
+
+    public String getBrand() {
+        return this.brand;
+    }
+
+    public String getModel() {
+        return this.model;
+    }
+
     public String summaryString() {
         String fmt = "%s: %s %s";
         String value = String.format(fmt, 

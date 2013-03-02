@@ -10,6 +10,7 @@ import org.apache.commons.cli.ParseException;
 public class InventoryParser {
     
     private static Options makeOptions() {
+        // Inventory tool options
 		Option verbose = OptionBuilder.withLongOpt("verbose")
                                       .withDescription("Set verbose output")
                                       .create('v');
@@ -17,6 +18,8 @@ public class InventoryParser {
                                        .withDescription("Set application configuration file")
                                        .hasArg()
                                        .create('c');
+
+        // Stock items list control options
 		Option stockList = OptionBuilder.withLongOpt("list")
                                         .withDescription("List exisiting stock items")
                                         .create('l');
@@ -35,6 +38,8 @@ public class InventoryParser {
                                        .withDescription("Delete an item from stock")
                                        .hasArg()
                                        .create('d');
+
+        // Stock item record control options
 		Option itemNoteSet = OptionBuilder.withLongOpt("set-note")
                                        .withDescription("Update stock item note")
                                        .hasArg()
@@ -46,17 +51,6 @@ public class InventoryParser {
                                        .withDescription("Update item bought cost")
                                        .hasArg()
                                        .create("setCost");
-//		Option itemSelling = OptionBuilder.withLongOpt("selling")
-//                                       .withDescription("Toggle item selling or not")
-//                                       .create("selling");
-//		Option itemPriceMine = OptionBuilder.withLongOpt("set-price")
-//                                       .withDescription("Update item market price")
-//                                       .hasArg()
-//                                       .create("setPrice");
-//		Option itemPriceMarket = OptionBuilder.withLongOpt("set-market")
-//                                       .withDescription("Update item selling price")
-//                                       .hasArg()
-//                                       .create("setMarket");
 		Option itemAmountSet = OptionBuilder.withLongOpt("set-amount")
                                        .withDescription("Update item stock amount")
                                        .hasArg()
@@ -77,25 +71,47 @@ public class InventoryParser {
                                        .hasArg()
                                        .create("setTitle");
 
+        // Selling item control options
+		Option saleStart = OptionBuilder.withLongOpt("start-selling")
+                                       .withDescription("Start selling selected item")
+                                       .hasArg()
+                                       .create("startSelling");
+		Option saleStop = OptionBuilder.withLongOpt("stop-selling")
+                                       .withDescription("Stop selling selectem item")
+                                       .create("stopSelling");
+		Option saleMarketPrice = OptionBuilder.withLongOpt("set-market")
+                                       .withDescription("Update item market price")
+                                       .hasArg()
+                                       .create("setMarket");
+		Option saleMinePrice = OptionBuilder.withLongOpt("set-price")
+                                       .withDescription("Update item sell price")
+                                       .hasArg()
+                                       .create("setPrice");
+
         Options options = new Options();
+
         options.addOption(verbose);
         options.addOption(datafile);
+
         options.addOption(stockList);
         options.addOption(stockFind);
         options.addOption(stockAdd);
         options.addOption(stockSelect);
         options.addOption(stockRemove);
+
         options.addOption(itemNoteSet);
         options.addOption(itemNoteRemove);
         options.addOption(itemCostSet);
-//        options.addOption(itemSelling);
-//        options.addOption(itemPriceMine);
-//        options.addOption(itemPriceMarket);
         options.addOption(itemAmountSet);
         options.addOption(itemTagAdd);
         options.addOption(itemTagRemove);
         options.addOption(itemTagsClear);
         options.addOption(itemTitleSet);
+
+        options.addOption(saleStart);
+        options.addOption(saleStop);
+        options.addOption(saleMarketPrice);
+        options.addOption(saleMinePrice);
 
         return options;
     }
