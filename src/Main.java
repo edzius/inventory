@@ -1,16 +1,15 @@
 
 import org.ini4j.Ini;
 import org.apache.commons.cli.CommandLine;
-
-import com.obixlabs.commons.io.InteractiveCommandLineReader;
-import com.obixlabs.commons.io.FreeTextConsoleInputHandler;
  
 import java.io.File;
 import java.io.IOException;
 
 import storage.StockList;
 import storage.StockItem;
-import storage.Selector;
+import cli.Selector;
+import cli.CliTools;
+
 
 /*
  * TODO:
@@ -137,52 +136,6 @@ public class Main {
         return null;
     }
 
-    public static String readCLI(String caption, boolean required) {
-        FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", !required);
-        try {
-            InteractiveCommandLineReader.prompt(hndl);
-        } catch (IOException e) {
-            return null;
-        }
-        return hndl.getInputValue();
-    }
-
-    public static String listCLI(String caption, Selector selector, boolean allowCustom) {
-        int i;
-        String text;
-        FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", false);
-
-        while (true) {
-
-            for (i = 0; i < selector.size(); i++) {
-                System.out.println(String.format("%d: %s", i+1, selector.get(i)));
-            }
-            System.out.println(String.format("*: Custom entry"));
-
-            try {
-                InteractiveCommandLineReader.prompt(hndl);
-            } catch (IOException e) {
-                return null;
-            }
-            text = hndl.getInputValue();
-
-            try {
-                int value = Integer.parseInt(text);
-                if (selector.size() <= value) {
-                    perror(String.format("Invalid index selected %d", value));
-                    continue;
-                }
-                return selector.get(value-1);
-            } catch (Exception e) {}
-
-            if (!allowCustom)
-                continue;
-
-            selector.add(text);
-            return text;
-        }
-    }
-
     public static void process(Main ctrl, CommandLine params) throws IOException {
         if (params.hasOption('l')) {
             ctrl.listStockItems();
@@ -190,10 +143,10 @@ public class Main {
         }
 
         if (params.hasOption('a')) {
-            String type = listCLI("Product type", ctrl.getTypeSelector(), true);
-            String brand = listCLI("Product brand", ctrl.getBrandSelector(), true);
-            String model = readCLI("Product model", true);
-            String title = readCLI("Product title", false);
+            String type = CliTools.listCLI("Product type", ctrl.getTypeSelector(), true);
+            String brand = CliTools.listCLI("Product brand", ctrl.getBrandSelector(), true);
+            String model = CliTools.readCLI("Product model", true);
+            String title = CliTools.readCLI("Product title", false);
             ctrl.addStockItem(type, model, brand, title);
             perror("Stock item added succesfully");
         }
@@ -248,7 +201,7 @@ public class Main {
             if (params.hasOption("addTag")) {
                 String value = params.getOptionValue("addTag");
                 if (value == null)
-                    value = listCLI("Add item tag", ctrl.getTagSelector(), true);
+                    value = CliTools.listCLI("Add item tag", ctrl.getTagSelector(), true);
                 item.addTag(value);
                 perror(String.format("Added tag for item"));
             }
@@ -256,7 +209,7 @@ public class Main {
             if (params.hasOption("removeTag")) {
                 String value = params.getOptionValue("removeTag");
                 if (value == null)
-                    value = listCLI("Remove item tag", new Selector(item.getTags()), false);
+                    value = CliTools.listCLI("Remove item tag", new Selector(item.getTags()), false);
                 item.removeTag(value);
                 perror(String.format("Removed tag from item"));
             }
