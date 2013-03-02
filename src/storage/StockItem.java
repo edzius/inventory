@@ -40,6 +40,19 @@ public class StockItem extends ItemParser {
         this.note = "";
     }
 
+    public boolean match(String value) {
+        if (this.type.indexOf(value) != -1)
+            return true;
+        if (this.brand.indexOf(value) != -1)
+            return true;
+        if (this.model.indexOf(value) != -1)
+            return true;
+        if (this.tags.find(value) != -1)
+            return true;
+
+        return false;
+    }
+
     public void updateIndex(int index) {
         this.index = index;
     }

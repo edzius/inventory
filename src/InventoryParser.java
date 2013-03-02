@@ -20,6 +20,10 @@ public class InventoryParser {
 		Option stockList = OptionBuilder.withLongOpt("list")
                                         .withDescription("List exisiting stock items")
                                         .create('l');
+		Option stockFind = OptionBuilder.withLongOpt("find")
+                                       .withDescription("Find item in stock")
+                                       .hasArg()
+                                       .create('f');
 		Option stockAdd = OptionBuilder.withLongOpt("add")
                                        .withDescription("Add new item to stock")
                                        .create('a');
@@ -73,6 +77,7 @@ public class InventoryParser {
         options.addOption(verbose);
         options.addOption(datafile);
         options.addOption(stockList);
+        options.addOption(stockFind);
         options.addOption(stockAdd);
         options.addOption(stockSelect);
         options.addOption(stockRemove);

@@ -101,8 +101,31 @@ public class Main {
             System.out.println(items.getElement(i));
     }
 
-    public void findStockItems(String value) {
+    public StockItem[] findStockItems(String value) {
+        StockItem item;
+        int count = 0;
+        for (int i = 0; i < items.getCount(); i++) {
+            item = items.getElement(i);
+            if (!item.match(value))
+                continue;
 
+            count += 1;
+        }
+
+        if (count == 0)
+            return null;
+
+        StockItem[] filtered = new StockItem[count];
+        int current = 0;
+        for (int i = 0; i < items.getCount(); i++) {
+            item = items.getElement(i);
+            if (!item.match(value))
+                continue;
+
+            filtered[current] = item;
+            current += 1;
+        }
+        return filtered;
     }
 
     public StockItem getStockItem(int index) {
@@ -155,7 +178,15 @@ public class Main {
         if (params.hasOption('f')) {                    // Find item
             String value = params.getOptionValue('f');
 
-            ctrl.findStockItems(value);
+            StockItem[] items = ctrl.findStockItems(value);
+            if (items == null) {
+                perror(String.format("Can't find items matching '%s'", value));
+                return;
+            }
+
+            for (int i = 0; i < items.length; i++) {
+                System.out.println(items[i].toString());
+            }
             return;
         }
 
