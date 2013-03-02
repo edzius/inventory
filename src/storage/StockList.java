@@ -95,4 +95,8 @@ public class StockList {
         }
         return max + 1;
     }
+
+    public StockItem[] toArray() {
+        return data.toArray(new StockItem[1]);
+    }
 }

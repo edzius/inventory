@@ -93,12 +93,11 @@ public class Main {
         return this.tags;
     }
 
-    public void listStockItems() {
-        int i;
-        int count = items.getCount();
+    public StockItem[] listStockItems() {
+        if (items.getCount() == 0)
+            return null;
 
-        for (i = 0; i < count; i++)
-            System.out.println(items.getElement(i));
+        return items.toArray();
     }
 
     public StockItem[] findStockItems(String value) {
@@ -169,10 +168,22 @@ public class Main {
         return null;
     }
 
+    public static void printStockItems(StockItem[] items) {
+        for (int i = 0; i < items.length; i++) {
+            System.out.println(items[i].toString());
+        }
+    }
+
     public static void process(Main ctrl, CommandLine params) throws IOException {
         if (params.hasOption('l')) {
-            ctrl.listStockItems();
-            perror("Stock items listed succesfully");
+            StockItem[] items = ctrl.listStockItems();
+            if (items == null) {
+                perror("No items to display");
+                return;
+            }
+
+            printStockItems(items);
+            return;
         }
 
         if (params.hasOption('f')) {                    // Find item
@@ -183,10 +194,8 @@ public class Main {
                 perror(String.format("Can't find items matching '%s'", value));
                 return;
             }
-
-            for (int i = 0; i < items.length; i++) {
-                System.out.println(items[i].toString());
-            }
+            
+            printStockItems(items);
             return;
         }
 
