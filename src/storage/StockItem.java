@@ -8,7 +8,7 @@ public class StockItem extends ItemParser {
     private String model;
     private String title;
     private int haveAmount;
-    private int boughtPrice;
+    private float buyPrice;
     private ItemTags tags;
     private String note;
 
@@ -21,7 +21,7 @@ public class StockItem extends ItemParser {
         this.model = nextString();
         this.title = nextString();
         this.haveAmount = nextInt();
-        this.boughtPrice = nextInt();
+        this.buyPrice = nextFloat();
         this.tags = new ItemTags(nextString());
         this.note = nextString();
     }
@@ -35,7 +35,7 @@ public class StockItem extends ItemParser {
         this.model = model;
         this.title = title;
         this.haveAmount = -1;
-        this.boughtPrice = -1;
+        this.buyPrice = -1;
         this.tags = new ItemTags();
         this.note = "";
     }
@@ -54,6 +54,9 @@ public class StockItem extends ItemParser {
     }
 
     public void updateIndex(int index) {
+        if (this.index != -1)
+            return;
+
         this.index = index;
     }
 
@@ -85,6 +88,10 @@ public class StockItem extends ItemParser {
         this.haveAmount = value;
     }
 
+    public void setBuyPrice(float value) {
+        this.buyPrice = value;
+    }
+
     public int getIndex() {
         return this.index;
     }
@@ -108,7 +115,7 @@ public class StockItem extends ItemParser {
                 this.model, 
                 this.title,
                 this.haveAmount < 0 ? "" : this.haveAmount, 
-                this.boughtPrice < 0 ? "" : this.boughtPrice, 
+                this.buyPrice < 0 ? "" : this.buyPrice, 
                 this.tags.toString(),
                 this.note);
 
@@ -124,7 +131,7 @@ public class StockItem extends ItemParser {
                 this.model, 
                 this.title,
                 this.haveAmount < 0 ? "-" : this.haveAmount, 
-                this.boughtPrice < 0 ? "" : this.boughtPrice, 
+                this.buyPrice < 0 ? "" : this.buyPrice, 
                 this.tags.toString(), 
                 this.note);
 

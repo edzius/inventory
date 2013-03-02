@@ -19,15 +19,13 @@ public class CliTools {
     }
 
     public static String listCLI(String caption, Selector selector, boolean allowCustom) {
-        int i;
         String text;
         FreeTextConsoleInputHandler hndl = new FreeTextConsoleInputHandler(caption + ": ", "Invalid " + caption + ", repeat: ", false);
 
         while (true) {
 
-            for (i = 0; i < selector.size(); i++) {
+            for (int i = 0; i < selector.size(); i++)
                 System.out.println(String.format("%d: %s", i + 1, selector.get(i)));
-            }
             System.out.println(String.format("*: Custom entry"));
 
             try {

@@ -16,7 +16,7 @@ public class Selector {
 
     public Selector(String[] values) {
         this.readOnly = true;
-        this.data = new ArrayList<String>();
+        clean();
 
         for (int i = 0; i < values.length; i++)
             data.add(values[i]);
@@ -25,13 +25,19 @@ public class Selector {
     public Selector(String fileName) throws IOException {
         this.readOnly = false;
         this.fileName = fileName;
-        this.data = new ArrayList<String>();
         read(fileName);
+    }
+
+    private void clean() {
+        this.data = new ArrayList<String>();
     }
 
     private void read(String fileName) throws IOException {
         String line;
         BufferedReader br = new BufferedReader(new FileReader(fileName));
+
+        clean();
+        this.readOnly = false;
 
         while ((line = br.readLine()) != null) {
             data.add(line);

@@ -28,14 +28,11 @@ public class StockList {
     }
 
     public void write(String fileName) throws IOException {
-        int i;
-        String line;
-        StockItem item;
         BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
 
-        for (i = 0; i < getCount(); i++) {
-            item = getElement(i);
-            line = item.fileString();
+        for (int i = 0; i < getCount(); i++) {
+            StockItem item = getElement(i);
+            String line = item.fileString();
 
             bw.write(line, 0, line.length());
             bw.newLine();
@@ -53,14 +50,12 @@ public class StockList {
     }
 
     private int getPosition(int index) {
-        int i;
-        for (i = 0; i < getCount(); i++)
+        for (int i = 0; i < getCount(); i++)
             if (getElement(i).getIndex() == index)
                 return i;
 
         return -1;
     }
-
 
     public boolean hasItem(int index) {
         return getPosition(index) != -1;
@@ -84,11 +79,10 @@ public class StockList {
     }   
 
     private int getFreeIndex() {
-        int i;
         int max = 0;
         StockItem item;
 
-        for (i = 0; i < getCount(); i++) {
+        for (int i = 0; i < getCount(); i++) {
             item = getElement(i);
             if (item.getIndex() > max)
                 max = item.getIndex();

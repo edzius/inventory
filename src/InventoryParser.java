@@ -42,6 +42,10 @@ public class InventoryParser {
 		Option itemNoteRemove = OptionBuilder.withLongOpt("remove-note")
                                        .withDescription("Remove stock item note")
                                        .create("removeNote");
+		Option itemCostSet = OptionBuilder.withLongOpt("set-cost")
+                                       .withDescription("Update item bought cost")
+                                       .hasArg()
+                                       .create("setCost");
 //		Option itemSelling = OptionBuilder.withLongOpt("selling")
 //                                       .withDescription("Toggle item selling or not")
 //                                       .create("selling");
@@ -83,6 +87,7 @@ public class InventoryParser {
         options.addOption(stockRemove);
         options.addOption(itemNoteSet);
         options.addOption(itemNoteRemove);
+        options.addOption(itemCostSet);
 //        options.addOption(itemSelling);
 //        options.addOption(itemPriceMine);
 //        options.addOption(itemPriceMarket);
@@ -101,8 +106,8 @@ public class InventoryParser {
         CommandLineParser parser = new GnuParser();
         try {
             params = parser.parse(options, args);
-        } catch (ParseException exp) {
-            Utils.die("Parsing failed. Reason: " + exp.getMessage());
+        } catch (ParseException e) {
+            Utils.die("Parsing failed. Reason: " + e.getMessage());
         }
 
         return params;

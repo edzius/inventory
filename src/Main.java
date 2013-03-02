@@ -45,8 +45,6 @@ public class Main {
     public Main(CommandLine params, Ini config) throws IOException, AttributeException {
         this.config = config;
         this.params = params;
-        if (params.hasOption('v'))
-            verbose = true;
 
         readStorages();
     }
@@ -169,9 +167,8 @@ public class Main {
     }
 
     public static void printStockItems(StockItem[] items) {
-        for (int i = 0; i < items.length; i++) {
+        for (int i = 0; i < items.length; i++)
             System.out.println(items[i].toString());
-        }
     }
 
     public static void process(Main ctrl, CommandLine params) throws IOException {
@@ -232,12 +229,18 @@ public class Main {
 
             if (params.hasOption("removeNote")) {
                 item.setNote("");
-                perror(String.format("Removed item note"));
+                perror("Removed item note");
             }
 
             if (params.hasOption("setNote")) {
                 item.setNote(params.getOptionValue("setNote"));
-                perror(String.format("Updated item note"));
+                perror("Updated item note");
+            }
+
+            if (params.hasOption("setCost")) {
+                float value = Float.parseFloat(params.getOptionValue("setCost"));
+                item.setBuyPrice(value);
+                perror(String.format("Updated item cost"));
             }
 
 //            if (params.hasOption("selling")) {
@@ -260,7 +263,7 @@ public class Main {
             if (params.hasOption("setAmount")) {
                 int value = Integer.parseInt(params.getOptionValue("setAmount"));
                 item.setAmount(value);
-                perror(String.format("Updated item stock amount"));
+                perror("Updated item stock amount");
             }
 
             if (params.hasOption("addTag")) {
@@ -268,7 +271,7 @@ public class Main {
                 if (value == null)
                     value = CliTools.listCLI("Add item tag", ctrl.getTagSelector(), true);
                 item.addTag(value);
-                perror(String.format("Added tag for item"));
+                perror("Added tag for item");
             }
 
             if (params.hasOption("removeTag")) {
@@ -276,18 +279,18 @@ public class Main {
                 if (value == null)
                     value = CliTools.listCLI("Remove item tag", new Selector(item.getTags()), false);
                 item.removeTag(value);
-                perror(String.format("Removed tag from item"));
+                perror("Removed tag from item");
             }
 
             if (params.hasOption("clearTags")) {
                 item.clearTags();
-                perror(String.format("Cleared all item tags"));
+                perror("Cleared all item tags");
             }
 
             if (params.hasOption("setTitle")) {
                 String value = params.getOptionValue("setTitle");
                 item.setTitle(value);
-                perror(String.format("New title for item set"));
+                perror("New title for item set");
             }
 
 

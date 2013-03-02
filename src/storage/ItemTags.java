@@ -9,11 +9,10 @@ class ItemTags {
     private ArrayList<String> tags;
 
     public ItemTags(String line) {
-        int i;
         String[] tarr = line.split(TAG_SEPARATOR);
         tags = new ArrayList<String>();
 
-        for (i = 0; i < tarr.length; i++)
+        for (int i = 0; i < tarr.length; i++)
             tags.add(tarr[i]);
     }
 
@@ -40,9 +39,8 @@ class ItemTags {
     }
 
     public String toString() {
-        int i;
         String line = "";
-        for (i = 0; i < tags.size(); i++) {
+        for (int i = 0; i < tags.size(); i++) {
             line += tags.get(i);
             if (i < tags.size() - 1)
                 line += TAG_SEPARATOR;
@@ -52,6 +50,6 @@ class ItemTags {
     }
 
     public String[] toArray() {
-        return (String[]) tags.toArray();
+        return tags.toArray(new String[1]);
     }
 }
