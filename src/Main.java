@@ -15,14 +15,15 @@ import com.obixlabs.commons.io.FreeTextConsoleInputHandler;
 import java.io.File;
 import java.io.IOException;
 
-import inv.storage.StockList;
-import inv.storage.StockItem;
-import inv.storage.Selector;
+import storage.StockList;
+import storage.StockItem;
+import storage.Selector;
 
 /*
  * TODO:
  * * Add option to move item to sold list
  * * Separate StockItems and SellingItems lists
+ * * Selector and CLI utils move to separate package
  */
 
 class AttributeException extends Exception {
@@ -45,6 +46,7 @@ public class Main {
     private Ini config;
 
     private StockList items;
+
     private Selector types;
     private Selector brands;
     private Selector tags;
@@ -60,9 +62,11 @@ public class Main {
 
     public void readStorages() throws IOException, AttributeException {
         Ini.Section storage = this.config.get("storages");
+
         String itemsFile = storage.get("items-file");
         if (itemsFile == null)
             throw new AttributeException("Items file path not defined");
+
         String typesDb = storage.get("types-db");
         if (typesDb == null)
             throw new AttributeException("Types DB file path not defined");
@@ -235,22 +239,22 @@ public class Main {
                 perror(String.format("Updated item note"));
             }
 
-            if (params.hasOption("selling")) {
-                item.toggleSelling();
-                perror(String.format("Updated item selling state"));
-            }
-
-            if (params.hasOption("setMarket")) {
-                float value = Float.parseFloat(params.getOptionValue("setMarket"));
-                item.setMarketPrice(value);
-                perror(String.format("Updated item market price"));
-            }
-
-            if (params.hasOption("setPrice")) {
-                float value = Float.parseFloat(params.getOptionValue("setPrice"));
-                item.setMinePrice(value);
-                perror(String.format("Updated item selling price"));
-            }
+//            if (params.hasOption("selling")) {
+//                item.toggleSelling();
+//                perror(String.format("Updated item selling state"));
+//            }
+//
+//            if (params.hasOption("setMarket")) {
+//                float value = Float.parseFloat(params.getOptionValue("setMarket"));
+//                item.setMarketPrice(value);
+//                perror(String.format("Updated item market price"));
+//            }
+//
+//            if (params.hasOption("setPrice")) {
+//                float value = Float.parseFloat(params.getOptionValue("setPrice"));
+//                item.setMinePrice(value);
+//                perror(String.format("Updated item selling price"));
+//            }
 
             if (params.hasOption("setAmount")) {
                 int value = Integer.parseInt(params.getOptionValue("setAmount"));
@@ -319,17 +323,17 @@ public class Main {
 		Option itemNoteRemove = OptionBuilder.withLongOpt("remove-note")
                                        .withDescription("Remove stock item note")
                                        .create("removeNote");
-		Option itemSelling = OptionBuilder.withLongOpt("selling")
-                                       .withDescription("Toggle item selling or not")
-                                       .create("selling");
-		Option itemPriceMine = OptionBuilder.withLongOpt("set-price")
-                                       .withDescription("Update item market price")
-                                       .hasArg()
-                                       .create("setPrice");
-		Option itemPriceMarket = OptionBuilder.withLongOpt("set-market")
-                                       .withDescription("Update item selling price")
-                                       .hasArg()
-                                       .create("setMarket");
+//		Option itemSelling = OptionBuilder.withLongOpt("selling")
+//                                       .withDescription("Toggle item selling or not")
+//                                       .create("selling");
+//		Option itemPriceMine = OptionBuilder.withLongOpt("set-price")
+//                                       .withDescription("Update item market price")
+//                                       .hasArg()
+//                                       .create("setPrice");
+//		Option itemPriceMarket = OptionBuilder.withLongOpt("set-market")
+//                                       .withDescription("Update item selling price")
+//                                       .hasArg()
+//                                       .create("setMarket");
 		Option itemAmountSet = OptionBuilder.withLongOpt("set-amount")
                                        .withDescription("Update item stock amount")
                                        .hasArg()
@@ -359,9 +363,9 @@ public class Main {
         options.addOption(stockRemove);
         options.addOption(itemNoteSet);
         options.addOption(itemNoteRemove);
-        options.addOption(itemSelling);
-        options.addOption(itemPriceMine);
-        options.addOption(itemPriceMarket);
+//        options.addOption(itemSelling);
+//        options.addOption(itemPriceMine);
+//        options.addOption(itemPriceMarket);
         options.addOption(itemAmountSet);
         options.addOption(itemTagAdd);
         options.addOption(itemTagRemove);
