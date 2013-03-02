@@ -186,6 +186,16 @@ public class Main {
         return sales.getItem(index);
     }
 
+    public Object listFullItems() {
+        StockItem[] items = listStockItems();
+        return null;
+    }
+
+    public Object findFullItems(String value) {
+        StockItem[] items = findStockItems(value);
+        return null;
+    }
+
     public static void perror(String message) {
         System.err.println(message);
     }
@@ -276,8 +286,8 @@ public class Main {
                 perror("Updated item note");
             }
 
-            if (params.hasOption("setCost")) {
-                float value = Float.parseFloat(params.getOptionValue("setCost"));
+            if (params.hasOption("setBuyPrice")) {
+                float value = Float.parseFloat(params.getOptionValue("setBuyPrice"));
                 item.setBuyPrice(value);
                 perror(String.format("Updated item cost"));
             }
@@ -334,8 +344,8 @@ public class Main {
                 perror(String.format("Stopped selling item"));
             }
 
-            if (params.hasOption("setMarket")) {
-                float value = Float.parseFloat(params.getOptionValue("setMarket"));
+            if (params.hasOption("setMarketPrice")) {
+                float value = Float.parseFloat(params.getOptionValue("setMarketPrice"));
                 try {
                     SellingItem sale = ctrl.getSellingItem(index);
                     sale.setMarketPrice(value);
@@ -345,11 +355,11 @@ public class Main {
                 perror("Updated selling item market price");
             }
 
-            if (params.hasOption("setPrice")) {
-                float value = Float.parseFloat(params.getOptionValue("setPrice"));
+            if (params.hasOption("setSellPrice")) {
+                float value = Float.parseFloat(params.getOptionValue("setSellPrice"));
                 try {
                     SellingItem sale = ctrl.getSellingItem(index);
-                    sale.setMinePrice(value);
+                    sale.setSellPrice(value);
                 } catch (AttributeException e) {
                     Utils.die(String.format(e.getMessage()));
                 }

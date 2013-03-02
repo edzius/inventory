@@ -9,8 +9,8 @@ public class SellingItem extends ItemParser {
     private String brand;
     private String model;
     // --------
+    private float sellPrice;
     private float marketPrice;
-    private float minePrice;
 
     public SellingItem(String line) {
         super(line);
@@ -22,7 +22,7 @@ public class SellingItem extends ItemParser {
         this.brand = nextString();
         this.model = nextString();
 
-        this.minePrice = nextFloat();
+        this.sellPrice = nextFloat();
         this.marketPrice = nextFloat();
     }
 
@@ -34,7 +34,7 @@ public class SellingItem extends ItemParser {
         this.type = item.getType();
         this.brand = item.getBrand();
         this.model = item.getModel();
-        this.minePrice = price;
+        this.sellPrice = price;
         this.marketPrice = -1;
     }
 
@@ -45,8 +45,8 @@ public class SellingItem extends ItemParser {
         this.index = index;
     }
 
-    public void setMinePrice(float value) {
-        this.minePrice = value;
+    public void setSellPrice(float value) {
+        this.sellPrice = value;
     }
 
     public void setMarketPrice(float value) {
@@ -57,6 +57,14 @@ public class SellingItem extends ItemParser {
         return this.index;
     }
 
+    public float getSellPrice() {
+        return this.sellPrice;
+    }
+
+    public float getMarketPrice() {
+        return this.marketPrice;
+    }
+
     public String fileString() {
         String fmt = "%4s | %-15s | %-15s | %-20s | %7s | %7s";
         String value = String.format(fmt, 
@@ -64,7 +72,7 @@ public class SellingItem extends ItemParser {
                 this.type, 
                 this.brand, 
                 this.model, 
-                this.minePrice,
+                this.sellPrice,
                 this.marketPrice < 0 ? "" : this.marketPrice);
 
         return value;
@@ -78,7 +86,7 @@ public class SellingItem extends ItemParser {
                 this.type, 
                 this.brand, 
                 this.model, 
-                this.minePrice,
+                this.sellPrice,
                 this.marketPrice < 0 ? "-" : this.marketPrice);
 
         return value;

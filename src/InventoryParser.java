@@ -47,10 +47,10 @@ public class InventoryParser {
 		Option itemNoteRemove = OptionBuilder.withLongOpt("remove-note")
                                        .withDescription("Remove stock item note")
                                        .create("removeNote");
-		Option itemCostSet = OptionBuilder.withLongOpt("set-cost")
+		Option itemBuyPriceSet = OptionBuilder.withLongOpt("set-buy-price")
                                        .withDescription("Update item bought cost")
                                        .hasArg()
-                                       .create("setCost");
+                                       .create("setBuyPrice");
 		Option itemAmountSet = OptionBuilder.withLongOpt("set-amount")
                                        .withDescription("Update item stock amount")
                                        .hasArg()
@@ -79,14 +79,14 @@ public class InventoryParser {
 		Option saleStop = OptionBuilder.withLongOpt("stop-selling")
                                        .withDescription("Stop selling selectem item")
                                        .create("stopSelling");
-		Option saleMarketPrice = OptionBuilder.withLongOpt("set-market")
+		Option itemMarketPriceSet = OptionBuilder.withLongOpt("set-market-price")
                                        .withDescription("Update item market price")
                                        .hasArg()
-                                       .create("setMarket");
-		Option saleMinePrice = OptionBuilder.withLongOpt("set-price")
+                                       .create("setMarketPrice");
+		Option itemSellPriceSet = OptionBuilder.withLongOpt("set-sell-price")
                                        .withDescription("Update item sell price")
                                        .hasArg()
-                                       .create("setPrice");
+                                       .create("setSellPrice");
 
         Options options = new Options();
 
@@ -101,7 +101,7 @@ public class InventoryParser {
 
         options.addOption(itemNoteSet);
         options.addOption(itemNoteRemove);
-        options.addOption(itemCostSet);
+        options.addOption(itemBuyPriceSet);
         options.addOption(itemAmountSet);
         options.addOption(itemTagAdd);
         options.addOption(itemTagRemove);
@@ -110,8 +110,8 @@ public class InventoryParser {
 
         options.addOption(saleStart);
         options.addOption(saleStop);
-        options.addOption(saleMarketPrice);
-        options.addOption(saleMinePrice);
+        options.addOption(itemMarketPriceSet);
+        options.addOption(itemSellPriceSet);
 
         return options;
     }

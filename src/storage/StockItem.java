@@ -108,6 +108,26 @@ public class StockItem extends ItemParser {
         return this.model;
     }
 
+    public String getTitle() {
+        return this.title;
+    }
+
+    public int getHaveAmount() {
+        return this.haveAmount;
+    }
+
+    public float getBuyPrice() {
+        return this.buyPrice;
+    }
+
+    public String getTagsString() {
+        return this.tags.toString();
+    }
+
+    public String getNote() {
+        return this.note;
+    }
+
     public String summaryString() {
         String fmt = "%s: %s %s";
         String value = String.format(fmt, 
