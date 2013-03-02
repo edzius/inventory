@@ -71,9 +71,9 @@ public class StockList {
         return getElement(position);
     }
 
-    public void addItem(String type, String manufacturer, String model, String title) {
+    public void addItem(StockItem item) {
         int index = getFreeIndex();
-        StockItem item = new StockItem(index, type, manufacturer, model, title);
+        item.updateIndex(index);
         data.add(item);
     }
 

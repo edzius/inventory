@@ -15,7 +15,6 @@ import cli.CliTools;
  * TODO:
  * * Add option to move item to sold list
  * * Separate StockItems and SellingItems lists
- * * Selector and CLI utils move to separate package
  */
 
 class AttributeException extends Exception {
@@ -102,16 +101,27 @@ public class Main {
             System.out.println(items.getElement(i));
     }
 
+    public void findStockItems(String value) {
+
+    }
+
     public StockItem getStockItem(int index) {
         return items.getItem(index);
     }
 
-    public void addStockItem(String type, String model, String manufacturer, String title) {
-        items.addItem(type, manufacturer, model, title);
+    public StockItem addStockItem(String type, String model, String manufacturer, String title) {
+        StockItem item = new StockItem(type, manufacturer, model, title);
+        items.addItem(item);
+        return item;
     }
 
-    public void deleteStockItem(int index) {
+    public StockItem deleteStockItem(int index) throws AttributeException {
+        if (!hasStockItem(index))
+            throw new AttributeException(String.format("Stock item %d not found", index));
+
+        StockItem item = getStockItem(index);
         items.deleteItem(index);
+        return item;
     }
 
     public boolean hasStockItem(int index) {
@@ -142,24 +152,32 @@ public class Main {
             perror("Stock items listed succesfully");
         }
 
+        if (params.hasOption('f')) {                    // Find item
+            String value = params.getOptionValue('f');
+
+            ctrl.findStockItems(value);
+            return;
+        }
+
         if (params.hasOption('a')) {                    // Add item
             String type = CliTools.listCLI("Product type", ctrl.getTypeSelector(), true);
             String brand = CliTools.listCLI("Product brand", ctrl.getBrandSelector(), true);
             String model = CliTools.readCLI("Product model", true);
             String title = CliTools.readCLI("Product title", false);
-            ctrl.addStockItem(type, model, brand, title);
-            perror("Stock item added succesfully");
+            StockItem item = ctrl.addStockItem(type, model, brand, title);
+            perror(String.format("Added item -- %s", item.summaryString()));
             return;
         }
 
         if (params.hasOption('d')) {                    // Delete item
             int index = Integer.parseInt(params.getOptionValue('d'));
-            if (!ctrl.hasStockItem(index))
-                Utils.die(String.format("Stock item %d not found", index));
-
-            StockItem item = ctrl.getStockItem(index);
-            ctrl.deleteStockItem(index);
-            perror(String.format("Deleted item %s", item.summaryString()));
+            StockItem item = null;
+            try {
+                item = ctrl.deleteStockItem(index);
+            } catch (AttributeException e) {
+                Utils.die(e.getMessage());
+            }
+            perror(String.format("Deleted item -- %s", item.summaryString()));
             return;
         }
 

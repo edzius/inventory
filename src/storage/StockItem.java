@@ -26,10 +26,10 @@ public class StockItem extends ItemParser {
         this.note = nextString();
     }
 
-    public StockItem(int index, String type, String brand, String model, String title) {
+    public StockItem(String type, String brand, String model, String title) {
         super("");
 
-        this.index = index;
+        this.index = -1;
         this.type = type;
         this.brand = brand;
         this.model = model;
@@ -38,6 +38,10 @@ public class StockItem extends ItemParser {
         this.boughtPrice = -1;
         this.tags = new ItemTags();
         this.note = "";
+    }
+
+    public void updateIndex(int index) {
+        this.index = index;
     }
 
     public void addTag(String tag) {
