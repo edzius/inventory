@@ -142,16 +142,28 @@ public class Main {
             perror("Stock items listed succesfully");
         }
 
-        if (params.hasOption('a')) {
+        if (params.hasOption('a')) {                    // Add item
             String type = CliTools.listCLI("Product type", ctrl.getTypeSelector(), true);
             String brand = CliTools.listCLI("Product brand", ctrl.getBrandSelector(), true);
             String model = CliTools.readCLI("Product model", true);
             String title = CliTools.readCLI("Product title", false);
             ctrl.addStockItem(type, model, brand, title);
             perror("Stock item added succesfully");
+            return;
         }
 
-        if (params.hasOption('s')) {
+        if (params.hasOption('d')) {                    // Delete item
+            int index = Integer.parseInt(params.getOptionValue('d'));
+            if (!ctrl.hasStockItem(index))
+                Utils.die(String.format("Stock item %d not found", index));
+
+            StockItem item = ctrl.getStockItem(index);
+            ctrl.deleteStockItem(index);
+            perror(String.format("Deleted item %s", item.summaryString()));
+            return;
+        }
+
+        if (params.hasOption('s')) {                    // Select item
             int index = Integer.parseInt(params.getOptionValue('s'));
             StockItem item;
 
@@ -159,11 +171,6 @@ public class Main {
                 Utils.die(String.format("Stock item %d not found", index));
 
             item = ctrl.getStockItem(index);
-            if (params.hasOption('d')) {
-                ctrl.deleteStockItem(index);
-                perror(String.format("Deleted item %s", item.summaryString()));
-                return;
-            }
 
             if (params.hasOption("removeNote")) {
                 item.setNote("");

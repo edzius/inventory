@@ -29,6 +29,7 @@ public class InventoryParser {
                                        .create('s');
 		Option stockRemove = OptionBuilder.withLongOpt("delete")
                                        .withDescription("Delete an item from stock")
+                                       .hasArg()
                                        .create('d');
 		Option itemNoteSet = OptionBuilder.withLongOpt("set-note")
                                        .withDescription("Update stock item note")
