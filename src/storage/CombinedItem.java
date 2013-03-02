@@ -19,7 +19,7 @@ public class CombinedItem {
                 item.getBrand(),
                 item.getModel(),
                 item.getTitle(),
-                item.getHaveAmount() < 0 ? "-" : item.getHaveAmount(),
+                item.getHaveAmount(),
                 item.getBuyPrice() < 0 ? "-" : item.getBuyPrice(),
                 sale.getSellPrice(),
                 sale.getMarketPrice() < 0 ? "-" : sale.getMarketPrice(),

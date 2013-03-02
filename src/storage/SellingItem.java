@@ -66,9 +66,10 @@ public class SellingItem extends ItemParser {
     }
 
     public String fileString() {
-        String fmt = "%4s | %-15s | %-15s | %-20s | %7s | %7s";
+        String fmt = "%4s | %4s | %-15s | %-15s | %-20s | %7s | %7s";
         String value = String.format(fmt, 
                 this.index, 
+                this.itemId,
                 this.type, 
                 this.brand, 
                 this.model, 
@@ -79,10 +80,9 @@ public class SellingItem extends ItemParser {
     }
 
     public String toString() {
-        String fmt = "| %4s | %4s | %-15s | %-15s | %-20s | %7s | %7s |";
+        String fmt = "| %4s | %-15s | %-15s | %-20s | %7s | %7s |";
         String value = String.format(fmt, 
                 this.index, 
-                this,itemId,
                 this.type, 
                 this.brand, 
                 this.model, 

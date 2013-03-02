@@ -34,7 +34,7 @@ public class StockItem extends ItemParser {
         this.brand = brand;
         this.model = model;
         this.title = title;
-        this.haveAmount = -1;
+        this.haveAmount = 1;
         this.buyPrice = -1;
         this.tags = new ItemTags();
         this.note = "";
@@ -146,7 +146,7 @@ public class StockItem extends ItemParser {
                 this.brand, 
                 this.model, 
                 this.title,
-                this.haveAmount < 0 ? "" : this.haveAmount, 
+                this.haveAmount,
                 this.buyPrice < 0 ? "" : this.buyPrice, 
                 this.tags.toString(),
                 this.note);
@@ -162,7 +162,7 @@ public class StockItem extends ItemParser {
                 this.brand, 
                 this.model, 
                 this.title,
-                this.haveAmount < 0 ? "-" : this.haveAmount, 
+                this.haveAmount,
                 this.buyPrice < 0 ? "" : this.buyPrice, 
                 this.tags.toString(), 
                 this.note);
