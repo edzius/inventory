@@ -57,6 +57,10 @@ public class SellingItem extends ItemParser {
         return this.index;
     }
 
+    public int getItemId() {
+        return this.itemId;
+    }
+
     public float getSellPrice() {
         return this.sellPrice;
     }

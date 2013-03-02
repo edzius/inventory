@@ -11,6 +11,16 @@ public class StockList {
 
     private ArrayList<StockItem> data;
 
+    public StockList(StockItem[] values) {
+        data = new ArrayList<StockItem>();
+
+        if (values == null)
+            return;
+
+        for (int i = 0; i < values.length; i++)
+            data.add(values[i]);
+    }
+
     public StockList(String fileName) throws IOException {
         data = new ArrayList<StockItem>();
         read(fileName);

@@ -9,6 +9,8 @@ import storage.StockList;
 import storage.StockItem;
 import storage.SellingList;
 import storage.SellingItem;
+import storage.CombinedItem;
+import storage.CombinedFactory;
 import cli.Selector;
 import cli.CliTools;
 
@@ -136,6 +138,13 @@ public class Main {
         return filtered;
     }
 
+    public SellingItem[] listSellingItems() {
+        if (sales.getCount() == 0)
+            return null;
+
+        return sales.toArray();
+    }
+
     public StockItem getStockItem(int index) throws AttributeException {
         if (!hasStockItem(index))
             throw new AttributeException(String.format("Stock item %d not found", index));
@@ -186,14 +195,23 @@ public class Main {
         return sales.getItem(index);
     }
 
-    public Object listFullItems() {
-        StockItem[] items = listStockItems();
-        return null;
+    private CombinedItem[] combineItems(StockItem[] items, SellingItem[] sales) {
+        if (items == null)
+            return null;
+
+        return CombinedFactory.combine(items, sales);
     }
 
-    public Object findFullItems(String value) {
+    public CombinedItem[] listFullItems() {
+        StockItem[] items = listStockItems();
+        SellingItem[] sales = listSellingItems();
+        return combineItems(items, sales);
+    }
+
+    public CombinedItem[] findFullItems(String value) {
         StockItem[] items = findStockItems(value);
-        return null;
+        SellingItem[] sales = listSellingItems();
+        return combineItems(items, sales);
     }
 
     public static void perror(String message) {
@@ -214,33 +232,44 @@ public class Main {
         return null;
     }
 
-    public static void printStockItems(StockItem[] items) {
+    public static void printItems(Object[] items) {
         for (int i = 0; i < items.length; i++)
             System.out.println(items[i].toString());
     }
 
     public static void process(Main ctrl, CommandLine params) throws IOException {
-        if (params.hasOption('l')) {
-            StockItem[] items = ctrl.listStockItems();
+        if (params.hasOption('l')) {                    // List item
+            String value = params.getOptionValue('l');
+            Object[] items = null;
+
+            if (value == null) {
+                items = ctrl.listFullItems();
+            } else if (value.equals("items")) {
+                items = ctrl.listStockItems();
+            } else if (value.equals("sales")) {
+                items = ctrl.listSellingItems();
+            }
+
             if (items == null) {
                 perror("No items to display");
                 return;
             }
 
-            printStockItems(items);
+            printItems(items);
             return;
         }
 
         if (params.hasOption('f')) {                    // Find item
             String value = params.getOptionValue('f');
+            Object[] items = null;
 
-            StockItem[] items = ctrl.findStockItems(value);
+            items = ctrl.findFullItems(value);
             if (items == null) {
                 perror(String.format("Can't find items matching '%s'", value));
                 return;
             }
             
-            printStockItems(items);
+            printItems(items);
             return;
         }
 
@@ -399,4 +428,3 @@ public class Main {
         }
 	}
 };
-

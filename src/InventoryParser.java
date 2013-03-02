@@ -22,22 +22,23 @@ public class InventoryParser {
         // Stock items list control options
 		Option stockList = OptionBuilder.withLongOpt("list")
                                         .withDescription("List exisiting stock items")
+                                        .hasOptionalArg()
                                         .create('l');
 		Option stockFind = OptionBuilder.withLongOpt("find")
-                                       .withDescription("Find item in stock")
-                                       .hasArg()
-                                       .create('f');
+                                        .withDescription("Find item in stock")
+                                        .hasArg()
+                                        .create('f');
 		Option stockAdd = OptionBuilder.withLongOpt("add")
                                        .withDescription("Add new item to stock")
                                        .create('a');
 		Option stockSelect = OptionBuilder.withLongOpt("select")
-                                       .withDescription("Select an item from stock")
-                                       .hasArg()
-                                       .create('s');
+                                          .withDescription("Select an item from stock")
+                                          .hasArg()
+                                          .create('s');
 		Option stockRemove = OptionBuilder.withLongOpt("delete")
-                                       .withDescription("Delete an item from stock")
-                                       .hasArg()
-                                       .create('d');
+                                          .withDescription("Delete an item from stock")
+                                          .hasArg()
+                                          .create('d');
 
         // Stock item record control options
 		Option itemNoteSet = OptionBuilder.withLongOpt("set-note")

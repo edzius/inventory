@@ -11,6 +11,16 @@ public class SellingList {
 
     private ArrayList<SellingItem> data;
 
+    public SellingList(SellingItem[] values) {
+        data = new ArrayList<SellingItem>();
+
+        if (values == null)
+            return;
+
+        for (int i = 0; i < values.length; i++)
+            data.add(values[i]);
+    }
+
     public SellingList(String fileName) throws IOException {
         data = new ArrayList<SellingItem>();
         read(fileName);
@@ -52,9 +62,10 @@ public class SellingList {
         return data.get(index);
     }
 
+    // XXX: using getItemId() instead getIndex().. index is not essential in this case
     private int getPosition(int index) {
         for (int i = 0; i < getCount(); i++)
-            if (getElement(i).getIndex() == index)
+            if (getElement(i).getItemId() == index)
                 return i;
 
         return -1;
@@ -91,5 +102,9 @@ public class SellingList {
                 max = item.getIndex();
         }
         return max + 1;
+    }
+
+    public SellingItem[] toArray() {
+        return data.toArray(new SellingItem[1]);
     }
 }
