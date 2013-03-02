@@ -1,13 +1,6 @@
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.ParseException;
-
 import org.ini4j.Ini;
+import org.apache.commons.cli.CommandLine;
 
 import com.obixlabs.commons.io.InteractiveCommandLineReader;
 import com.obixlabs.commons.io.FreeTextConsoleInputHandler;
@@ -126,16 +119,6 @@ public class Main {
         return items.hasItem(index);
     }
 
-    public static void die(String message) {
-        System.err.println(message);
-        System.exit(1);
-    }
-
-    public static void ok(String message) {
-        System.err.println(message);
-        System.exit(0);
-    }
-
     public static void perror(String message) {
         System.err.println(message);
     }
@@ -144,12 +127,12 @@ public class Main {
         File configFile = new File(fileName);
 
         if (!configFile.exists() || !configFile.isFile())
-            die(String.format("Config file '%s' does not exist", fileName));
+            Utils.die(String.format("Config file '%s' does not exist", fileName));
 
         try {
             return new Ini(configFile);
         } catch (IOException e) {
-            die(String.format("Failed to read config file '%s'", fileName));
+            Utils.die(String.format("Failed to read config file '%s'", fileName));
         }
         return null;
     }
@@ -220,7 +203,7 @@ public class Main {
             StockItem item;
 
             if (!ctrl.hasStockItem(index))
-                die(String.format("Stock item %d not found", index));
+                Utils.die(String.format("Stock item %d not found", index));
 
             item = ctrl.getStockItem(index);
             if (params.hasOption('d')) {
@@ -295,90 +278,7 @@ public class Main {
     }
 
 	public static void main(String[] args) {
-
-		Option verbose = OptionBuilder.withLongOpt("verbose")
-                                      .withDescription("Set verbose output")
-                                      .create('v');
-		Option datafile = OptionBuilder.withLongOpt("config")
-                                       .withDescription("Set application configuration file")
-                                       .hasArg()
-                                       .create('c');
-		Option stockList = OptionBuilder.withLongOpt("list")
-                                        .withDescription("List exisiting stock items")
-                                        .create('l');
-		Option stockAdd = OptionBuilder.withLongOpt("add")
-                                       .withDescription("Add new item to stock")
-                                       .create('a');
-		Option stockSelect = OptionBuilder.withLongOpt("select")
-                                       .withDescription("Select an item from stock")
-                                       .hasArg()
-                                       .create('s');
-		Option stockRemove = OptionBuilder.withLongOpt("delete")
-                                       .withDescription("Delete an item from stock")
-                                       .create('d');
-		Option itemNoteSet = OptionBuilder.withLongOpt("set-note")
-                                       .withDescription("Update stock item note")
-                                       .hasArg()
-                                       .create("setNote");
-		Option itemNoteRemove = OptionBuilder.withLongOpt("remove-note")
-                                       .withDescription("Remove stock item note")
-                                       .create("removeNote");
-//		Option itemSelling = OptionBuilder.withLongOpt("selling")
-//                                       .withDescription("Toggle item selling or not")
-//                                       .create("selling");
-//		Option itemPriceMine = OptionBuilder.withLongOpt("set-price")
-//                                       .withDescription("Update item market price")
-//                                       .hasArg()
-//                                       .create("setPrice");
-//		Option itemPriceMarket = OptionBuilder.withLongOpt("set-market")
-//                                       .withDescription("Update item selling price")
-//                                       .hasArg()
-//                                       .create("setMarket");
-		Option itemAmountSet = OptionBuilder.withLongOpt("set-amount")
-                                       .withDescription("Update item stock amount")
-                                       .hasArg()
-                                       .create("setAmount");
-        Option itemTagAdd = OptionBuilder.withLongOpt("add-tag")
-                                       .withDescription("Add new tag for item")
-                                       .hasOptionalArg()
-                                       .create("addTag");
-        Option itemTagRemove = OptionBuilder.withLongOpt("remove-tag")
-                                       .withDescription("Remove item tag")
-                                       .hasOptionalArg()
-                                       .create("removeTag");
-        Option itemTagsClear = OptionBuilder.withLongOpt("clear-tags")
-                                       .withDescription("Remove all item tags")
-                                       .create("clearTags");
-        Option itemTitleSet = OptionBuilder.withLongOpt("set-title")
-                                       .withDescription("Update item title")
-                                       .hasArg()
-                                       .create("setTitle");
-
-        Options options = new Options();
-        options.addOption(verbose);
-        options.addOption(datafile);
-        options.addOption(stockList);
-        options.addOption(stockAdd);
-        options.addOption(stockSelect);
-        options.addOption(stockRemove);
-        options.addOption(itemNoteSet);
-        options.addOption(itemNoteRemove);
-//        options.addOption(itemSelling);
-//        options.addOption(itemPriceMine);
-//        options.addOption(itemPriceMarket);
-        options.addOption(itemAmountSet);
-        options.addOption(itemTagAdd);
-        options.addOption(itemTagRemove);
-        options.addOption(itemTagsClear);
-        options.addOption(itemTitleSet);
-
-        CommandLine params = null;
-        CommandLineParser parser = new GnuParser();
-        try {
-            params = parser.parse(options, args);
-        } catch (ParseException exp) {
-            die("Parsing failed. Reason: " + exp.getMessage());
-        }
+        CommandLine params = InventoryParser.parse(args);
 
         String configFile = "default.cfg";
         if (params.hasOption('c'))
@@ -390,18 +290,18 @@ public class Main {
         try {
             ctrl = new Main(params, config);
         } catch (Exception e) {                 // IOException, AttributeException
-            die(e.getMessage());
+            Utils.die(e.getMessage());
         }
 
         try {
             process(ctrl, params);
         } catch (Exception e) {
-            die(e.getMessage());
+            Utils.die(e.getMessage());
         } finally {
             try {
                 ctrl.writeStorages();
             } catch (IOException ex) {
-                die(ex.getMessage());
+                Utils.die(ex.getMessage());
             }
         }
 	}
