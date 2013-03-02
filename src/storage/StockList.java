@@ -21,6 +21,9 @@ public class StockList {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
 
         while ((line = br.readLine()) != null) {
+            if (line.trim().length() == 0)
+                continue;
+
             data.add(new StockItem(line));
         }
 
