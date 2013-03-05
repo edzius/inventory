@@ -89,6 +89,13 @@ public class InventoryParser {
                                        .hasArg()
                                        .create("setSellPrice");
 
+        // Sold item control options
+        Option markSold = OptionBuilder.withLongOpt("set-sold")
+                                       .withDescription("set selected item as sold")
+                                       .hasArgs(2)
+                                       .create("sold");
+
+
         Options options = new Options();
 
         options.addOption(verbose);
@@ -113,6 +120,8 @@ public class InventoryParser {
         options.addOption(saleStop);
         options.addOption(itemMarketPriceSet);
         options.addOption(itemSellPriceSet);
+
+        options.addOption(markSold);
 
         return options;
     }

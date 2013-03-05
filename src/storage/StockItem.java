@@ -112,7 +112,7 @@ public class StockItem extends ItemParser {
         return this.title;
     }
 
-    public int getHaveAmount() {
+    public int getAmount() {
         return this.haveAmount;
     }
 

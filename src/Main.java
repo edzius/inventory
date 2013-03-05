@@ -5,6 +5,8 @@ import org.apache.commons.cli.CommandLine;
 import java.io.File;
 import java.io.IOException;
 
+import storage.SoldList;
+import storage.SoldItem;
 import storage.StockList;
 import storage.StockItem;
 import storage.SellingList;
@@ -17,7 +19,9 @@ import cli.CliTools;
 
 /*
  * TODO:
- * * Add option to move item to sold list
+ * * Add option to move item to sold list -- done
+ * * Show summarized lists: main one (how much have, how much sold, is selling, how much earned, losses, etc.), items list, sales list, sold list, items + sales, items + sold
+ * * Add search feature to custom lists
  * * Formatter factrory, configured and acting as preprocessor for given items
  */
 
@@ -42,6 +46,7 @@ public class Main {
 
     private StockList items;
     private SellingList sales;
+    private SoldList solds;
 
     private Selector types;
     private Selector brands;
@@ -61,9 +66,13 @@ public class Main {
         if (itemsFile == null)
             throw new AttributeException("Items file path not defined");
 
-        String salesFile = storage.get("sales-file");
+        String salesFile = storage.get("selling-file");
         if (salesFile == null)
             throw new AttributeException("Sales file path not defined");
+
+        String soldsFile = storage.get("sold-file");
+        if (soldsFile == null)
+            throw new AttributeException("Solds file path not defined");
 
         String typesDb = storage.get("types-db");
         if (typesDb == null)
@@ -77,6 +86,7 @@ public class Main {
 
         this.items = new StockList(itemsFile);
         this.sales = new SellingList(salesFile);
+        this.solds = new SoldList(soldsFile);
 
         this.types = new Selector(typesDb);
         this.brands = new Selector(brandsDb);
@@ -86,10 +96,12 @@ public class Main {
     public void writeStorages() throws IOException {
         Ini.Section storage = this.config.get("storages");
         String itemsFile = storage.get("items-file");
-        String salesFile = storage.get("sales-file");
+        String salesFile = storage.get("selling-file");
+        String soldsFile = storage.get("sold-file");
 
         this.items.write(itemsFile);
         this.sales.write(salesFile);
+        this.solds.write(soldsFile);
     }
 
     public Selector getTypeSelector() {
@@ -193,6 +205,33 @@ public class Main {
             throw new AttributeException(String.format("Item %d is not selling", index));
 
         return sales.getItem(index);
+    }
+
+    private int getSoldCount(int index) {
+        int count = 0;
+        SoldItem[] items = this.solds.getItemsById(index);
+        if (items == null)
+            return count;
+
+        for (int i = 0; i < items.length; i++) {
+            count += items[i].getSoldAmount();
+        }
+
+        return count;
+    }
+
+    public void setSoldItem(int index, float value, int amount) throws AttributeException {
+        StockItem item = getStockItem(index);
+        int haveCount = item.getAmount();
+        int soldCount = getSoldCount(index);
+
+        if (haveCount - soldCount <= 0)
+            throw new AttributeException(String.format("Item %d is out of stock", index));
+        if (haveCount - soldCount - amount < 0)
+            throw new AttributeException(String.format("Not enough items %d in stock to sell", index));
+
+        SoldItem sold = new SoldItem(item, value, amount);
+        solds.addItem(sold);
     }
 
     private CombinedItem[] combineItems(StockItem[] items, SellingItem[] sales) {
@@ -393,6 +432,21 @@ public class Main {
                     Utils.die(String.format(e.getMessage()));
                 }
                 perror("Updated selling item price");
+            }
+
+            if (params.hasOption("sold")) {
+                String[] values = params.getOptionValues("sold");
+                float price = Float.parseFloat(values[0]);
+                int amount = 1;
+                if (values.length == 2)
+                    amount = Integer.parseInt(values[1]);
+
+                try {
+                    ctrl.setSoldItem(index, price, amount);
+                } catch (AttributeException e) {
+                    Utils.die(String.format(e.getMessage()));
+                }
+                perror("Item moved to sold");
             }
 
             System.out.println(item.toString());
