@@ -18,7 +18,7 @@ import cli.CliTools;
 /*
  * TODO:
  * * Add option to move item to sold list
- * * Separate StockItems and SellingItems lists
+ * * Formatter factrory, configured and acting as preprocessor for given items
  */
 
 class AttributeException extends Exception {

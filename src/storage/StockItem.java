@@ -163,7 +163,7 @@ public class StockItem extends ItemParser {
                 this.model, 
                 this.title,
                 this.haveAmount,
-                this.buyPrice < 0 ? "" : this.buyPrice, 
+                this.buyPrice < 0 ? "-" : this.buyPrice, 
                 this.tags.toString(), 
                 this.note);
 
