@@ -20,6 +20,7 @@ import cli.CliTools;
 /*
  * TODO:
  * * Add option to move item to sold list -- done
+ * * Add header rinting before list
  * * Show summarized lists: main one (how much have, how much sold, is selling, how much earned, losses, etc.), items list, sales list, sold list, items + sales, items + sold
  * * Add search feature to custom lists
  * * Formatter factrory, configured and acting as preprocessor for given items
@@ -157,6 +158,13 @@ public class Main {
         return sales.toArray();
     }
 
+    public SoldItem[] listSoldItems() {
+        if (solds.getCount() == 0)
+            return null;
+
+        return solds.toArray();
+    }
+
     public StockItem getStockItem(int index) throws AttributeException {
         if (!hasStockItem(index))
             throw new AttributeException(String.format("Stock item %d not found", index));
@@ -234,23 +242,25 @@ public class Main {
         solds.addItem(sold);
     }
 
-    private CombinedItem[] combineItems(StockItem[] items, SellingItem[] sales) {
+    private CombinedItem[] combineItems(StockItem[] items, SellingItem[] sales, SoldItem[] solds) {
         if (items == null)
             return null;
 
-        return CombinedFactory.combine(items, sales);
+        return CombinedFactory.combine(items, sales, solds);
     }
 
     public CombinedItem[] listFullItems() {
         StockItem[] items = listStockItems();
         SellingItem[] sales = listSellingItems();
-        return combineItems(items, sales);
+        SoldItem[] solds = listSoldItems();
+        return combineItems(items, sales, solds);
     }
 
     public CombinedItem[] findFullItems(String value) {
         StockItem[] items = findStockItems(value);
         SellingItem[] sales = listSellingItems();
-        return combineItems(items, sales);
+        SoldItem[] solds = listSoldItems();
+        return combineItems(items, sales, solds);
     }
 
     public static void perror(String message) {
@@ -287,6 +297,8 @@ public class Main {
                 items = ctrl.listStockItems();
             } else if (value.equals("sales")) {
                 items = ctrl.listSellingItems();
+            } else if (value.equals("solds")) {
+                items = ctrl.listSoldItems();
             }
 
             if (items == null) {

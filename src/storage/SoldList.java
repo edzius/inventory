@@ -117,6 +117,16 @@ public class SoldList {
         return items;
     }
 
+    public boolean hasItemsWithId(int itemId) {
+        for (int i = 0; i < getCount(); i++) {
+            if (getElement(i).getItemId() != itemId)
+                continue;
+
+            return true;
+        }
+        return false;
+    }
+
     private int getFreeIndex() {
         int max = 0;
         SoldItem item;
