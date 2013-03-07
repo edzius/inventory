@@ -5,6 +5,7 @@ import org.apache.commons.cli.CommandLine;
 import java.io.File;
 import java.io.IOException;
 
+import storage.ItemInterface;
 import storage.SoldList;
 import storage.SoldItem;
 import storage.StockList;
@@ -20,7 +21,7 @@ import cli.CliTools;
 /*
  * TODO:
  * * Add option to move item to sold list -- done
- * * Add header rinting before list
+ * * Add header rinting before list -- done
  * * Show summarized lists: main one (how much have, how much sold, is selling, how much earned, losses, etc.), items list, sales list, sold list, items + sales, items + sold
  * * Add search feature to custom lists
  * * Formatter factrory, configured and acting as preprocessor for given items
@@ -281,7 +282,11 @@ public class Main {
         return null;
     }
 
-    public static void printItems(Object[] items) {
+    public static void printItems(ItemInterface[] items) {
+        if (items.length == 0)
+            return;
+
+        System.out.println(items[0].header());
         for (int i = 0; i < items.length; i++)
             System.out.println(items[i].toString());
     }
@@ -289,7 +294,7 @@ public class Main {
     public static void process(Main ctrl, CommandLine params) throws IOException {
         if (params.hasOption('l')) {                    // List item
             String value = params.getOptionValue('l');
-            Object[] items = null;
+            ItemInterface[] items = null;
 
             if (value == null) {
                 items = ctrl.listFullItems();
@@ -312,7 +317,7 @@ public class Main {
 
         if (params.hasOption('f')) {                    // Find item
             String value = params.getOptionValue('f');
-            Object[] items = null;
+            ItemInterface[] items = null;
 
             items = ctrl.findFullItems(value);
             if (items == null) {

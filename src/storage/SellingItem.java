@@ -1,6 +1,6 @@
 package storage;
 
-public class SellingItem extends ItemParser {
+public class SellingItem extends ItemParser implements ItemInterface {
 
     private int index;
     private int itemId;
@@ -67,6 +67,19 @@ public class SellingItem extends ItemParser {
 
     public float getMarketPrice() {
         return this.marketPrice;
+    }
+
+    public String header() {
+        String fmt = "| %4s | %-15s | %-15s | %-20s | %7s | %7s |";
+        String value = String.format(fmt, 
+                "ID",
+                "Type",
+                "Brand",
+                "Model",
+                "$Sell",
+                "$Market");
+
+        return value;
     }
 
     public String fileString() {

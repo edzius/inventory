@@ -1,6 +1,6 @@
 package storage;
 
-public class StockItem extends ItemParser {
+public class StockItem extends ItemParser implements ItemInterface {
 
     private int index;
     private String type;
@@ -126,6 +126,22 @@ public class StockItem extends ItemParser {
 
     public String getNote() {
         return this.note;
+    }
+
+    public String header() {
+        String fmt = "| %4s | %-15s | %-15s | %-20s | %-30s | %4s | %7s | %-30s | %-30s |";
+        String value = String.format(fmt, 
+                "ID",
+                "Type",
+                "Brand",
+                "Model",
+                "Title",
+                "Have",
+                "$Bought",
+                "Tags",
+                "Note");
+
+        return value;
     }
 
     public String summaryString() {

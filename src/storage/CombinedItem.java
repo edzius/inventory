@@ -1,7 +1,7 @@
 
 package storage;
 
-public class CombinedItem {
+public class CombinedItem implements ItemInterface {
 
     private StockItem item;
     private SellingItem sale;
@@ -59,7 +59,7 @@ public class CombinedItem {
     }
 
     public String header() {
-        String fmt = "| %4s | %-15s | %-15s | %-20s | %-30s | %-30s | %-30s | %c | %4s | %4s | %7s | %7s | %7s |";
+        String fmt = "| %4s | %-15s | %-15s | %-20s | %-30s | %-30s | %-30s | %s | %4s | %4s | %7s | %7s | %7s |";
         String value = String.format(fmt, 
                 "ID",
                 "Type",
@@ -76,7 +76,26 @@ public class CombinedItem {
                 "$Sold");
 
         return value;
+    }
 
+    public String fileString() {
+        String fmt = "%4s | %-15s | %-15s | %-20s | %-30s | %-30s | %-30s | %c | %4s | %4s | %7s | %7s | %7s";
+        String value = String.format(fmt, 
+                item.getIndex(),
+                item.getType(),
+                item.getBrand(),
+                item.getModel(),
+                item.getTitle(),
+                item.getTagsString(),
+                item.getNote(),
+                isSellable() ? 'X' : ' ',
+                getStockAmount(),
+                getSoldAmount() < 0 ? "-" : getSoldAmount(),
+                item.getBuyPrice() < 0 ? "-" : item.getBuyPrice(),
+                !isSellable() ? "-" : sale.getSellPrice(),
+                getSoldPrice() < 0 ? "-" : getSoldPrice());
+
+        return value;
     }
 
     public String toString() {
