@@ -103,6 +103,9 @@
 			<fileset dir=".">
 				<include name="lib/*.jar" />
 			</fileset>
+			<fileset dir="db">
+				<include name="default.cfg" />
+			</fileset>
 		</copy>
 
 		<symlink resource="${image_name}" link="${DIST_DIR}/inventory.jar" overwrite="yes"/>

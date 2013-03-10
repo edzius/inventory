@@ -482,7 +482,7 @@ public class Main {
 	public static void main(String[] args) {
         CommandLine params = InventoryParser.parse(args);
 
-        String configFile = "default.cfg";
+        String configFile = (new File(Utils.getSelfDir(), "default.cfg")).toString();
         if (params.hasOption('c'))
             configFile = params.getOptionValue('c');
 
