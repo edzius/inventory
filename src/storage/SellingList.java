@@ -62,10 +62,9 @@ public class SellingList {
         return data.get(index);
     }
 
-    // XXX: using getItemId() instead getIndex().. index is not essential in this case
     private int getPosition(int index) {
         for (int i = 0; i < getCount(); i++)
-            if (getElement(i).getItemId() == index)
+            if (getElement(i).getIndex() == index)
                 return i;
 
         return -1;
@@ -76,7 +75,7 @@ public class SellingList {
     }
     
     public SellingItem getItem(int index) {
-        int position = getPosition(index);
+        int position = getPositionById(index);
         return getElement(position);
     }
 
@@ -87,10 +86,21 @@ public class SellingList {
     }
 
     public void deleteItem(int index) {
-        int position = getPosition(index);
-        System.out.println(index);
+        int position = getPositionById(index);
         data.remove(position);
     }   
+
+    public int getPositionById(int id) {
+        for (int i = 0; i < getCount(); i++)
+            if (getElement(i).getItemId() == id)
+                return i;
+
+        return -1;
+    }
+
+    public boolean hasItemWithId(int id) {
+        return getPositionById(id) != -1;
+    }
 
     private int getFreeIndex() {
         int max = 0;

@@ -22,9 +22,9 @@ import cli.CliTools;
  * TODO:
  * * Add option to move item to sold list -- done
  * * Add header rinting before list -- done
- * * Show summarized lists: main one (how much have, how much sold, is selling, how much earned, losses, etc.), items list, sales list, sold list, items + sales, items + sold
- * * Add search feature to custom lists
- * * Formatter factrory, configured and acting as preprocessor for given items
+ * * Show summarized lists: main one (how much have, how much sold, is selling, how much earned, losses, etc.), items list, sales list, sold list, items + sales, items + sold -- done
+ * * Add search feature to custom lists 
+ * * Formatter factrory, configured and acting as preprocessor for given items -- done
  */
 
 class AttributeException extends Exception {
@@ -41,6 +41,7 @@ class AttributeException extends Exception {
 
 public class Main {
 
+    private static final String DEFAULT_LIST_FORMAT = "id,type,brand,model,title,tags,note,selling,had,have,sold,$bought,$ask,$market,$sold,$cost,$income,$earn";
     private boolean verbose = false;
 
     private CommandLine params;
@@ -53,11 +54,19 @@ public class Main {
     private Selector types;
     private Selector brands;
     private Selector tags;
+    private CombinedFactory combiner;
 
     public Main(CommandLine params, Ini config) throws IOException, AttributeException {
         this.config = config;
         this.params = params;
 
+        Ini.Section formats = this.config.get("formats");
+
+        String listFormat = formats.get("list-format");
+        if (listFormat == null)
+            listFormat = DEFAULT_LIST_FORMAT;
+
+        combiner = new CombinedFactory(listFormat);
         readStorages();
     }
 
@@ -125,6 +134,41 @@ public class Main {
         return items.toArray();
     }
 
+    public SellingItem[] listSellingItems() {
+        if (sales.getCount() == 0)
+            return null;
+
+        return sales.toArray();
+    }
+
+    public SoldItem[] listSoldItems() {
+        if (solds.getCount() == 0)
+            return null;
+
+        return solds.toArray();
+    }
+
+    private CombinedItem[] combineItems(StockItem[] items, SellingItem[] sales, SoldItem[] solds) {
+        if (items == null)
+            return null;
+        
+        return combiner.combine(items, sales, solds);
+    }
+
+    public CombinedItem[] listFullItems() {
+        StockItem[] items = listStockItems();
+        SellingItem[] sales = listSellingItems();
+        SoldItem[] solds = listSoldItems();
+        return combineItems(items, sales, solds);
+    }
+
+    public CombinedItem[] findFullItems(String value) {
+        StockItem[] items = findStockItems(value);
+        SellingItem[] sales = listSellingItems();
+        SoldItem[] solds = listSoldItems();
+        return combineItems(items, sales, solds);
+    }
+
     public StockItem[] findStockItems(String value) {
         StockItem item;
         int count = 0;
@@ -150,20 +194,6 @@ public class Main {
             current += 1;
         }
         return filtered;
-    }
-
-    public SellingItem[] listSellingItems() {
-        if (sales.getCount() == 0)
-            return null;
-
-        return sales.toArray();
-    }
-
-    public SoldItem[] listSoldItems() {
-        if (solds.getCount() == 0)
-            return null;
-
-        return solds.toArray();
     }
 
     public StockItem getStockItem(int index) throws AttributeException {
@@ -206,7 +236,7 @@ public class Main {
     }
 
     public boolean isSellingItem(int index) {
-        return sales.hasItem(index);
+        return sales.hasItemWithId(index);
     }
 
     public SellingItem getSellingItem(int index) throws AttributeException {
@@ -243,26 +273,6 @@ public class Main {
         solds.addItem(sold);
     }
 
-    private CombinedItem[] combineItems(StockItem[] items, SellingItem[] sales, SoldItem[] solds) {
-        if (items == null)
-            return null;
-
-        return CombinedFactory.combine(items, sales, solds);
-    }
-
-    public CombinedItem[] listFullItems() {
-        StockItem[] items = listStockItems();
-        SellingItem[] sales = listSellingItems();
-        SoldItem[] solds = listSoldItems();
-        return combineItems(items, sales, solds);
-    }
-
-    public CombinedItem[] findFullItems(String value) {
-        StockItem[] items = findStockItems(value);
-        SellingItem[] sales = listSellingItems();
-        SoldItem[] solds = listSoldItems();
-        return combineItems(items, sales, solds);
-    }
 
     public static void perror(String message) {
         System.err.println(message);

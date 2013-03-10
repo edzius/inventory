@@ -88,7 +88,6 @@ public class SoldList {
 
     public void deleteItem(int index) {
         int position = getPosition(index);
-        System.out.println(index);
         data.remove(position);
     }
 

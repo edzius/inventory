@@ -5,7 +5,17 @@ import java.util.ArrayList;
 
 public class CombinedFactory {
 
-    public static CombinedItem[] combine(StockItem[] itemsArray, SellingItem[] salesArray, SoldItem[] soldsArray) {
+    private String[] attributes;
+
+    public CombinedFactory(String[] attrs) {
+        this.attributes = attrs;
+    }
+
+    public CombinedFactory(String attr) {
+        this.attributes = attr.split(",");
+    }
+
+    public CombinedItem[] combine(StockItem[] itemsArray, SellingItem[] salesArray, SoldItem[] soldsArray) {
         ArrayList<CombinedItem> data = new ArrayList<CombinedItem>();
         StockList items = new StockList(itemsArray);
         SellingList sales = new SellingList(salesArray);
@@ -16,13 +26,16 @@ public class CombinedFactory {
             SellingItem sale = null;
             SoldItem[] sold = null;
 
-            if (sales.hasItem(item.getIndex()))
+            if (sales.hasItemWithId(item.getIndex()))
                 sale = sales.getItem(item.getIndex());
 
             if (solds.hasItemsWithId(item.getIndex()))
                 sold = solds.getItemsById(item.getIndex());
                
-            data.add(new CombinedItem(item, sale, sold));
+            CombinedItem joined = new CombinedItem(item, sale, sold);
+            joined.setAttributes(attributes);
+
+            data.add(joined);
         }
 
         if (data.size() == 0)
