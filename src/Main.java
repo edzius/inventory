@@ -148,25 +148,18 @@ public class Main {
         return solds.toArray();
     }
 
-    private CombinedItem[] combineItems(StockItem[] items, SellingItem[] sales, SoldItem[] solds) {
-        if (items == null)
-            return null;
-        
-        return combiner.combine(items, sales, solds);
-    }
-
-    public CombinedItem[] listFullItems() {
+    public CombinedItem[] listJointItems() {
         StockItem[] items = listStockItems();
         SellingItem[] sales = listSellingItems();
         SoldItem[] solds = listSoldItems();
-        return combineItems(items, sales, solds);
+        return combiner.joinAll(items, sales, solds);
     }
 
-    public CombinedItem[] findFullItems(String value) {
+    public CombinedItem[] findJointItems(String value) {
         StockItem[] items = findStockItems(value);
         SellingItem[] sales = listSellingItems();
         SoldItem[] solds = listSoldItems();
-        return combineItems(items, sales, solds);
+        return combiner.joinAll(items, sales, solds);
     }
 
     public StockItem[] findStockItems(String value) {
@@ -203,6 +196,18 @@ public class Main {
         return items.getItem(index);
     }
 
+    public SellingItem getSellingItem(int index) throws AttributeException {
+        if (!isSellingItem(index))
+            throw new AttributeException(String.format("Item %d is not selling", index));
+
+        return sales.getItem(index);
+    }
+
+    public CombinedItem getJointItem(int index) {
+        StockItem item = items.getItem(index);
+        return combiner.join(item, sales, solds);
+    }
+
     public StockItem addStockItem(String type, String model, String manufacturer, String title) {
         StockItem item = new StockItem(type, manufacturer, model, title);
         items.addItem(item);
@@ -237,13 +242,6 @@ public class Main {
 
     public boolean isSellingItem(int index) {
         return sales.hasItemWithId(index);
-    }
-
-    public SellingItem getSellingItem(int index) throws AttributeException {
-        if (!isSellingItem(index))
-            throw new AttributeException(String.format("Item %d is not selling", index));
-
-        return sales.getItem(index);
     }
 
     private int getSoldCount(int index) {
@@ -307,7 +305,7 @@ public class Main {
             ItemInterface[] items = null;
 
             if (value == null) {
-                items = ctrl.listFullItems();
+                items = ctrl.listJointItems();
             } else if (value.equals("items")) {
                 items = ctrl.listStockItems();
             } else if (value.equals("sales")) {
@@ -329,7 +327,7 @@ public class Main {
             String value = params.getOptionValue('f');
             ItemInterface[] items = null;
 
-            items = ctrl.findFullItems(value);
+            items = ctrl.findJointItems(value);
             if (items == null) {
                 perror(String.format("Can't find items matching '%s'", value));
                 return;
@@ -476,7 +474,8 @@ public class Main {
                 perror("Item moved to sold");
             }
 
-            System.out.println(item.toString());
+            CombinedItem joint = ctrl.getJointItem(item.getIndex());
+            System.out.println(joint.toString());
         }
     }
 
