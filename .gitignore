@@ -1,0 +1,11 @@
+*.class
+
+# Package Files #
+# *.jar
+# *.war
+# *.ear
+
+# Development files #
+*.swp
+dist/
+out/
