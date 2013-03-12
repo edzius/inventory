@@ -19,12 +19,15 @@ import cli.CliTools;
 
 
 /*
- * TODO:
- * * Add option to move item to sold list -- done
- * * Add header rinting before list -- done
- * * Show summarized lists: main one (how much have, how much sold, is selling, how much earned, losses, etc.), items list, sales list, sold list, items + sales, items + sold -- done
- * * Add search feature to custom lists 
- * * Formatter factrory, configured and acting as preprocessor for given items -- done
+ * XXX: (Features)
+ * - #1 Might be good feature to gave some predefined contom printing lists.
+ *   I could save for user time, while searching ultra-huge tables
+ * - #2 These custom lists should have filtering function. Determined by showing
+ *   attributes
+ * - #3 Item displaying may be in preprocessor (view) not in entity object  (model)
+ * - #4 New layer for sematic data retrieving. For MySQL, Files, WebServices
+ *   data capturin
+ * - #5 GUI
  */
 
 class AttributeException extends Exception {
